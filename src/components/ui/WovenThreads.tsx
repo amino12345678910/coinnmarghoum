@@ -7,7 +7,7 @@ import * as THREE from "three";
 class WebGLErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}> {
   state = { hasError: false };
   static getDerivedStateFromError() { return { hasError: true }; }
-  componentDidCatch(error: any) { console.error("WebGL Error:", error); }
+  componentDidCatch(error: unknown) { console.error("WebGL Error:", error); }
   render() {
     if (this.state.hasError) return null;
     return this.props.children;
