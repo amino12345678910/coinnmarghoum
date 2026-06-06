@@ -9,8 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        terracotta: "var(--terracotta)",
+        "deep-blue": "var(--deep-blue)",
+        cream: "var(--cream)",
+        olive: "var(--olive)",
+        brass: "var(--brass)",
+        charcoal: "var(--charcoal)",
+      },
+      fontFamily: {
+        heading: ["var(--font-fraunces)", "serif"],
+        body: ["var(--font-inter)", "sans-serif"],
+      },
+      backgroundImage: {
+        "paper-grain": "url('/images/paper-grain.png')",
+        "margoum-pattern": "var(--margoum-pattern)",
       },
     },
   },

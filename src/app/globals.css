@@ -3,21 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --terracotta: #B5532A;
+  --deep-blue: #1B2A4A;
+  --cream: #F4ECDD;
+  --olive: #6B6A3A;
+  --brass: #C9A24B;
+  --charcoal: #1A1714;
+  
+  --margoum-pattern: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0 L40 20 L20 40 L0 20 Z' fill='none' stroke='%23C9A24B' stroke-width='1' stroke-opacity='0.2'/%3E%3C/svg%3E");
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--charcoal);
+  background-color: var(--cream);
+  overflow-x: hidden;
 }
 
 @layer utilities {
