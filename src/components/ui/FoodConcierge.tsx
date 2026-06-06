@@ -41,7 +41,7 @@ export default function FoodConcierge() {
     setIsTyping(true);
 
     try {
-      const res = await fetch("/.netlify/functions/concierge", {
+      const res = await fetch("/api/concierge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),
@@ -49,11 +49,8 @@ export default function FoodConcierge() {
       
       const data = await res.json();
       
-      // Simulate streaming delay for graceful fallback
-      setTimeout(() => {
-        setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
-        setIsTyping(false);
-      }, 800);
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setIsTyping(false);
       
     } catch {
       setIsTyping(false);
