@@ -19,7 +19,7 @@ Instructions :
 - Si on te pose une question hors de la restauration, redirige poliment vers le restaurant.
 `;
 
-exports.handler = async function (event) {
+exports.handler = async function (event: any) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -45,7 +45,7 @@ exports.handler = async function (event) {
         model: "mistral-tiny",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          ...messages.map((m) => ({ role: m.role, content: m.content }))
+          ...messages.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }))
         ],
         temperature: 0.7,
         max_tokens: 150,
