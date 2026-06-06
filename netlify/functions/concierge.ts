@@ -28,7 +28,9 @@ exports.handler = async function (event: any) {
     const body = JSON.parse(event.body || "{}");
     const messages = body.messages || [];
 
-    if (!process.env.MISTRAL_API_KEY) {
+    const apiKey = process.env.MISTRAL_API_KEY || "WrxVMFzYyzU5k8Jr2JSDAhMWdFo0NYXC";
+
+    if (!apiKey) {
       return {
         statusCode: 200,
         body: JSON.stringify({ reply: "Désolé, l'hôte virtuel est en maintenance (API Key manquante). Contactez-nous sur WhatsApp pour réserver !" })
@@ -39,7 +41,7 @@ exports.handler = async function (event: any) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.MISTRAL_API_KEY}`
+        "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: "mistral-tiny",

@@ -118,7 +118,7 @@ export default function Hero() {
 
       {/* Main Text Overlay */}
       <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center pt-20 pb-32">
-        <div ref={textRef} className="max-w-5xl">
+        <div ref={textRef} className="max-w-5xl -mt-16 md:-mt-32">
           <span className="fade-in mb-6 block text-xs md:text-sm font-semibold tracking-[0.3em] text-brass uppercase opacity-0 translate-y-4">
             La Marsa · Tunisie
           </span>
