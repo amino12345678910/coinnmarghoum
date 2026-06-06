@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           // filter out any properties that Mistral might not expect, just in case
-          ...messages.map((m: any) => ({ role: m.role, content: m.content }))
+          ...messages.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }))
         ],
         temperature: 0.7,
         max_tokens: 150,
