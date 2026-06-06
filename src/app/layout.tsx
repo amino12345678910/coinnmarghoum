@@ -7,6 +7,7 @@ import Cursor from "@/components/ui/Cursor";
 import Preloader from "@/components/layout/Preloader";
 import Footer from "@/components/sections/Footer";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
+import FoodConcierge from "@/components/ui/FoodConcierge";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces" });
@@ -31,6 +32,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <FloatingWhatsApp />
+          <FoodConcierge />
         </LenisProvider>
       </body>
     </html>
