@@ -1,11 +1,11 @@
 import Hero from "@/components/sections/Hero";
+import Story from "@/components/sections/Story";
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
-      {/* Spacer for scroll testing */}
-      <div className="h-[100vh] bg-cream" />
+      <Story />
     </main>
   );
 }
