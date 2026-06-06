@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server';
-
 const SYSTEM_PROMPT = `Tu es "Margoum", l'hôte virtuel chaleureux et accueillant du restaurant tunisien haut de gamme "Coin Margoum", situé à La Marsa (Tunisie).
 Ta personnalité est élégante, respectueuse, et passionnée par la cuisine tunisienne. Tu utilises un ton chaleureux, souvent avec un petit mot en arabe tunisien (ex: Marhaba, Aslema, Aychek, Dima).
 
@@ -21,12 +19,20 @@ Instructions :
 - Si on te pose une question hors de la restauration, redirige poliment vers le restaurant.
 `;
 
-export async function POST(req: Request) {
+exports.handler = async function (event) {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
   try {
-    const { messages } = await req.json();
+    const body = JSON.parse(event.body || "{}");
+    const messages = body.messages || [];
 
     if (!process.env.MISTRAL_API_KEY) {
-      return NextResponse.json({ reply: "Désolé, l'hôte virtuel est en maintenance (API Key manquante). Contactez-nous sur WhatsApp pour réserver !" });
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ reply: "Désolé, l'hôte virtuel est en maintenance (API Key manquante). Contactez-nous sur WhatsApp pour réserver !" })
+      };
     }
 
     const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
@@ -39,8 +45,7 @@ export async function POST(req: Request) {
         model: "mistral-tiny",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          // filter out any properties that Mistral might not expect, just in case
-          ...messages.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }))
+          ...messages.map((m) => ({ role: m.role, content: m.content }))
         ],
         temperature: 0.7,
         max_tokens: 150,
@@ -48,19 +53,20 @@ export async function POST(req: Request) {
     });
 
     if (!res.ok) {
-      const err = await res.text();
-      console.error("Mistral API error:", err);
       throw new Error("Mistral API error");
     }
 
     const data = await res.json();
-    return NextResponse.json({ reply: data.choices[0].message.content });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ reply: data.choices[0].message.content })
+    };
 
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { reply: "Désolé, je suis un peu surchargé en cuisine ! Veuillez réessayer dans un instant." },
-      { status: 500 }
-    );
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ reply: "Désolé, je suis un peu surchargé en cuisine ! Veuillez réessayer dans un instant." })
+    };
   }
-}
+};

@@ -41,7 +41,7 @@ export default function FoodConcierge() {
     setIsTyping(true);
 
     try {
-      const res = await fetch("/api/concierge", {
+      const res = await fetch("/.netlify/functions/concierge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),
