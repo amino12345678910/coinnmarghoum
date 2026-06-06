@@ -25,6 +25,10 @@ const config: Config = {
         "margoum-pattern": "var(--margoum-pattern)",
       },
       keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
         "scroll-thread": {
           "0%": { transform: "scaleY(0)", transformOrigin: "top" },
           "50%": { transform: "scaleY(1)", transformOrigin: "top" },
@@ -33,6 +37,7 @@ const config: Config = {
         },
       },
       animation: {
+        marquee: "marquee 40s linear infinite",
         "scroll-thread": "scroll-thread 2.5s cubic-bezier(0.77, 0, 0.175, 1) infinite",
       },
     },

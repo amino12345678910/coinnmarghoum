@@ -2,6 +2,7 @@ import Hero from "@/components/sections/Hero";
 import Story from "@/components/sections/Story";
 import SignatureMenu from "@/components/sections/SignatureMenu";
 import Gallery from "@/components/sections/Gallery";
+import Reviews from "@/components/sections/Reviews";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Story />
       <SignatureMenu />
       <Gallery />
+      <Reviews />
     </main>
   );
 }
