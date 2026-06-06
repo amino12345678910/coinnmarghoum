@@ -120,20 +120,20 @@ export default function Story() {
 
             <Reveal delay={0.1}>
               <p className="text-base md:text-lg text-charcoal/80 mb-6 leading-relaxed">
-                Au Coin Margoum, chaque plat est préparé avec le même soin et la même patience qu'un tapis tissé à la main. L'artisanat se retrouve dans chaque détail.
+                Au Coin Margoum, chaque plat est préparé avec le même soin et la même patience qu&apos;un tapis tissé à la main. L&apos;artisanat se retrouve dans chaque détail.
               </p>
             </Reveal>
 
             <Reveal delay={0.2}>
               <p className="text-base md:text-lg text-charcoal/80 mb-10 leading-relaxed">
-                Des ingrédients soigneusement choisis et des épices équilibrées s'entrelacent pour créer une expérience culinaire où chaque saveur raconte une histoire, tout comme les motifs géométriques de notre héritage tunisien.
+                Des ingrédients soigneusement choisis et des épices équilibrées s&apos;entrelacent pour créer une expérience culinaire où chaque saveur raconte une histoire, tout comme les motifs géométriques de notre héritage tunisien.
               </p>
             </Reveal>
 
             <Reveal delay={0.3}>
               <blockquote className="border-l-2 border-terracotta pl-6 mb-10 py-1">
                 <p className="font-heading text-2xl md:text-3xl text-terracotta italic leading-snug tracking-tight">
-                  "Chaque plat est une histoire tissée."
+                  &quot;Chaque plat est une histoire tissée.&quot;
                 </p>
               </blockquote>
             </Reveal>
