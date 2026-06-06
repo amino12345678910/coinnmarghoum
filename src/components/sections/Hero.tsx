@@ -117,21 +117,21 @@ export default function Hero() {
       </div>
 
       {/* Main Text Overlay */}
-      <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center pt-20 pb-32">
-        <div ref={textRef} className="max-w-5xl -mt-16 md:-mt-32">
-          <span className="fade-in mb-6 block text-xs md:text-sm font-semibold tracking-[0.3em] text-brass uppercase opacity-0 translate-y-4">
+      <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 text-center pt-16 pb-24 lg:pt-20 lg:pb-0">
+        <div ref={textRef} className="w-full max-w-6xl">
+          <span className="fade-in mb-4 md:mb-6 block text-xs md:text-sm font-semibold tracking-[0.3em] text-brass uppercase opacity-0 translate-y-4">
             La Marsa · Tunisie
           </span>
           
-          <h1 className="mb-6 font-heading text-6xl md:text-8xl lg:text-9xl text-cream leading-[0.9] tracking-tight">
+          <h1 className="mb-6 md:mb-8 font-heading text-5xl md:text-7xl lg:text-[5.5rem] xl:text-8xl text-cream leading-[0.95] tracking-tight">
             {"Où la saveur tunisienne se ".split(" ").map((word, i) => (
-              <span key={i} className="inline-block overflow-hidden pb-2 mr-3 md:mr-4">
+              <span key={i} className="inline-block overflow-hidden pb-1 md:pb-2 mr-2 md:mr-4">
                 <span className="word inline-block translate-y-[110%]">{word}</span>
               </span>
             ))}
-            <span className="inline-block overflow-visible relative pb-2 pl-1">
+            <span className="inline-block overflow-visible relative pb-1 md:pb-2 pl-1">
               <span className="word inline-block translate-y-[110%]">tisse</span>
-              <svg className="absolute -bottom-1 left-0 w-full h-3 overflow-visible" viewBox="0 0 100 12" preserveAspectRatio="none">
+              <svg className="absolute -bottom-1 left-0 w-full h-3 md:h-4 overflow-visible" viewBox="0 0 100 12" preserveAspectRatio="none">
                 <path
                   ref={underlineRef}
                   d="M0,6 Q12,12 25,6 T50,6 T75,6 T100,6"
