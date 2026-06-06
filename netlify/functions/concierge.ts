@@ -20,7 +20,8 @@ TON ET STYLE:
 - Si le client veut réserver, suggérez-lui d'utiliser le formulaire de réservation sur le site ou de nous contacter sur WhatsApp.
 `;
 
-export async function handler(event, context) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function handler(event: any, context: any) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -59,7 +60,7 @@ export async function handler(event, context) {
   }
 }
 
-function getFallbackResponse(message) {
+function getFallbackResponse(message: string) {
   const msg = message.toLowerCase();
   if (msg.includes("recommand") || msg.includes("plat")) {
     return "Marhaba ! Je vous recommande vivement notre Couscous Royal, mijoté aux sept épices, ou notre succulente Ojja Merguez si vous aimez les plats légèrement piquants. Que préférez-vous ?";

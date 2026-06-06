@@ -5,7 +5,6 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/Button";
 import dynamic from "next/dynamic";
-import Reveal from "@/components/ui/Reveal";
 
 const WovenThreads = dynamic(() => import("@/components/ui/WovenThreads"), { ssr: false });
 

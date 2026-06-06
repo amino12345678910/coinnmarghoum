@@ -32,7 +32,8 @@ function Thread({ index }: { index: number }) {
   });
 
   return (
-    <line ref={lineRef}>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <line ref={lineRef as any}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
