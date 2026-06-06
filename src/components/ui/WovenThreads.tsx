@@ -1,8 +1,18 @@
 "use client";
 
-import { useRef, useMemo, useEffect, useState } from "react";
+import React, { useRef, useMemo, useEffect, useState, Component, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+
+class WebGLErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: any) { console.error("WebGL Error:", error); }
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
 
 const Segments = 50;
 
@@ -12,16 +22,18 @@ function Thread({ index }: { index: number }) {
   
   useFrame((state) => {
     if (!lineRef.current) return;
-    const time = state.clock.getElapsedTime();
-    const arr = lineRef.current.geometry.attributes.position.array as Float32Array;
+    if (!lineRef.current.geometry) return;
+    if (!lineRef.current.geometry.attributes.position) return;
     
-    // Calculate offsets based on index to spread the threads out
+    const arr = lineRef.current.geometry.attributes.position.array as Float32Array;
+    if (!arr) return;
+    
+    const time = state.clock.getElapsedTime();
     const zOffset = (index - 7) * 0.5;
     const yOffset = Math.sin(time * 0.1 + index) * 1.5;
     
     for (let j = 0; j < Segments; j++) {
       const x = (j / Segments) * 30 - 15;
-      // Gently undulating threads simulating loom strings
       const y = Math.sin(x * 0.3 + time * 0.4 + index * 0.2) * 0.8 + Math.cos(x * 0.15 + time * 0.2) * 0.5 + yOffset;
       
       arr[j * 3] = x; 
@@ -42,7 +54,7 @@ function Thread({ index }: { index: number }) {
         />
       </bufferGeometry>
       <lineBasicMaterial 
-        color={index % 4 === 0 ? "#ab5033" : "#c8a05a"} // Mix of Terracotta and Brass
+        color={index % 4 === 0 ? "#ab5033" : "#c8a05a"} 
         transparent 
         opacity={0.2} 
       />
@@ -54,11 +66,14 @@ export default function WovenThreads() {
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isDesktop = window.innerWidth >= 768;
-    
-    if (!prefersReducedMotion && isDesktop) {
-      setShouldRender(true);
+    try {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isDesktop = window.innerWidth >= 768;
+      if (!prefersReducedMotion && isDesktop) {
+        setShouldRender(true);
+      }
+    } catch (e) {
+      console.error("Error checking media queries", e);
     }
   }, []);
 
@@ -66,13 +81,15 @@ export default function WovenThreads() {
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
-      <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: false, powerPreference: "low-power" }}>
-        <group rotation={[0, 0, -Math.PI / 12]}>
-          {Array.from({ length: 20 }).map((_, i) => (
-            <Thread key={i} index={i} />
-          ))}
-        </group>
-      </Canvas>
+      <WebGLErrorBoundary>
+        <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: false, powerPreference: "low-power" }}>
+          <group rotation={[0, 0, -Math.PI / 12]}>
+            {Array.from({ length: 20 }).map((_, i) => (
+              <Thread key={i} index={i} />
+            ))}
+          </group>
+        </Canvas>
+      </WebGLErrorBoundary>
     </div>
   );
 }
