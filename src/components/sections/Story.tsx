@@ -7,7 +7,7 @@ import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 
 export default function Story() {
-  const containerRef = useRef<HTMLSectionElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const dishImageRef = useRef<HTMLDivElement>(null);
   const threadRef = useRef<SVGPathElement>(null);
