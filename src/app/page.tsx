@@ -4,12 +4,14 @@ import SignatureMenu from "@/components/sections/SignatureMenu";
 import Gallery from "@/components/sections/Gallery";
 import Reviews from "@/components/sections/Reviews";
 import Contact from "@/components/sections/Contact";
+import InteractiveDivider from "@/components/ui/InteractiveDivider";
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
       <Story />
+      <InteractiveDivider />
       <SignatureMenu />
       <Gallery />
       <Reviews />

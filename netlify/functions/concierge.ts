@@ -1,6 +1,3 @@
-import { NextResponse } from 'next/server';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SYSTEM_PROMPT = `
 Vous êtes Margoum, l'hôte chaleureux et virtuel du restaurant tunisien "Coin Margoum" à La Marsa.
 Votre rôle est d'accueillir les clients, de recommander des plats, d'expliquer les ingrédients, et d'offrir une assistance pour les réservations.
@@ -23,17 +20,25 @@ TON ET STYLE:
 - Si le client veut réserver, suggérez-lui d'utiliser le formulaire de réservation sur le site ou de nous contacter sur WhatsApp.
 `;
 
-export async function POST(request: Request) {
+export async function handler(event, context) {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
+
   try {
-    const { messages } = await request.json();
+    const body = JSON.parse(event.body || "{}");
+    const messages = body.messages || [];
     const lastUserMessage = messages[messages.length - 1]?.content || "";
 
-    // TODO: Set your API Key here via Environment Variables
+    // TODO: Set your API Key here via Environment Variables in Netlify Dashboard
     const apiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
       // GRACEFUL FALLBACK: No API Key, use local FAQ map
-      return NextResponse.json({ reply: getFallbackResponse(lastUserMessage) });
+      return { 
+        statusCode: 200, 
+        body: JSON.stringify({ reply: getFallbackResponse(lastUserMessage) }) 
+      };
     }
 
     // TODO: Implement actual fetch to OpenAI/Anthropic using the apiKey
@@ -43,15 +48,18 @@ export async function POST(request: Request) {
     //   body: JSON.stringify({ model: "gpt-4o", messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages] })
     // })
     
-    return NextResponse.json({ reply: "L'intégration LLM est prête à être activée avec votre clé API." });
+    return { 
+      statusCode: 200, 
+      body: JSON.stringify({ reply: "L'intégration LLM est prête à être activée avec votre clé API." }) 
+    };
 
   } catch (error) {
     console.error("Concierge API Error:", error);
-    return NextResponse.json({ error: "Une erreur s'est produite." }, { status: 500 });
+    return { statusCode: 500, body: JSON.stringify({ error: "Une erreur s'est produite." }) };
   }
 }
 
-function getFallbackResponse(message: string): string {
+function getFallbackResponse(message) {
   const msg = message.toLowerCase();
   if (msg.includes("recommand") || msg.includes("plat")) {
     return "Marhaba ! Je vous recommande vivement notre Couscous Royal, mijoté aux sept épices, ou notre succulente Ojja Merguez si vous aimez les plats légèrement piquants. Que préférez-vous ?";

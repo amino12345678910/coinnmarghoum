@@ -4,6 +4,10 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/Button";
+import dynamic from "next/dynamic";
+import Reveal from "@/components/ui/Reveal";
+
+const WovenThreads = dynamic(() => import("@/components/ui/WovenThreads"), { ssr: false });
 
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
@@ -106,11 +110,14 @@ export default function Hero() {
           <source src="/video/hero.mp4" type="video/mp4" />
         </video>
         {/* Dark gradient + grain overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-deep-blue/80 to-charcoal/40 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-paper-grain opacity-20 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-deep-blue/60 to-charcoal/40 mix-blend-multiply pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-20 pointer-events-none mix-blend-overlay" />
+      
+        {/* 3D Woven Threads Accent */}
+        <WovenThreads />
       </div>
 
-      {/* Content Overlay */}
+      {/* Main Text Overlay */}
       <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center pt-20">
         <div ref={textRef} className="max-w-5xl">
           <span className="fade-in mb-6 block text-xs md:text-sm font-semibold tracking-[0.3em] text-brass uppercase opacity-0 translate-y-4">
