@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
-import clsx from "clsx";
+
 import Reveal from "@/components/ui/Reveal";
 import { signatureDishes, Dish } from "@/data/dishes";
 
@@ -125,14 +125,7 @@ export default function SignatureMenu() {
           {signatureDishes.map((dish) => (
              <div 
                key={dish.id} 
-               className={clsx(
-                 "w-full max-w-md lg:w-[420px] flex-shrink-0 transition-transform duration-500",
-                 {
-                   "lg:-mt-12": dish.alignment === "top",
-                   "lg:mt-16": dish.alignment === "center",
-                   "lg:mt-40": dish.alignment === "bottom",
-                 }
-               )}
+               className="w-full max-w-md lg:w-[420px] flex-shrink-0 transition-transform duration-500"
              >
                <DishCard dish={dish} />
              </div>
