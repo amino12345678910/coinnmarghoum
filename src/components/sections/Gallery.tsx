@@ -188,7 +188,9 @@ export default function Gallery() {
                   src={galleryItems[activeIndex].src}
                   alt={galleryItems[activeIndex].caption}
                   fill
+                  sizes="100vw"
                   className="object-contain"
+                  priority
                 />
               ) : (
                 <video

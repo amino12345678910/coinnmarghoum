@@ -17,6 +17,7 @@ function DishCard({ dish }: { dish: Dish }) {
           src={dish.image} 
           alt={dish.name} 
           fill 
+          placeholder="blur"
           className="object-cover transition-transform duration-1000 group-hover:scale-110 saturate-[1.1] contrast-[1.05] brightness-95 sepia-[0.15]"
           sizes="(max-width: 1024px) 100vw, 400px"
         />

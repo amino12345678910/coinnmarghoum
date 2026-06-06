@@ -147,7 +147,7 @@ export default function Hero() {
           </h1>
 
           <p className="fade-in mx-auto mb-12 max-w-2xl text-lg md:text-xl text-cream/80 opacity-0 translate-y-4">
-            Une expérience culinaire authentique où chaque ingrédient raconte une histoire.
+            Le meilleur restaurant tunisien à La Marsa. Une expérience de cuisine tunisienne authentique où chaque plat, de notre fameux couscous La Marsa à nos briks croustillants, raconte une histoire.
           </p>
 
           <div className="fade-in flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 translate-y-4">

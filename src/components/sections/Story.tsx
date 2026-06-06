@@ -6,6 +6,9 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 
+import aboutMargoumImg from "../../../public/images/about_margoum.png";
+import dishCouscousImg from "../../../public/images/dish_couscous.png";
+
 export default function Story() {
   const containerRef = useRef<HTMLElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -80,11 +83,12 @@ export default function Story() {
           <div className="relative aspect-[4/5] md:aspect-[3/4] w-full max-w-md mx-auto lg:mx-0 overflow-hidden rounded-sm shadow-xl" ref={imageContainerRef}>
             <div className="absolute inset-0 z-0">
               <Image 
-                src="/images/about_margoum.png" 
+                src={aboutMargoumImg} 
                 alt="Détail de tissage Margoum" 
                 fill 
                 className="object-cover saturate-50 contrast-125"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                placeholder="blur"
               />
             </div>
             {/* The second image starts fully clipped from the top */}
@@ -94,11 +98,12 @@ export default function Story() {
               style={{ clipPath: "inset(100% 0% 0% 0%)" }}
             >
               <Image 
-                src="/images/dish_couscous.png" 
+                src={dishCouscousImg} 
                 alt="Couscous Royal Coin Margoum" 
                 fill 
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                placeholder="blur"
               />
             </div>
             {/* Subtle Margoum pattern overlay */}
@@ -120,7 +125,7 @@ export default function Story() {
 
             <Reveal delay={0.1}>
               <p className="text-base md:text-lg text-charcoal/80 mb-6 leading-relaxed">
-                Au Coin Margoum, chaque plat est préparé avec le même soin et la même patience qu&apos;un tapis tissé à la main. L&apos;artisanat se retrouve dans chaque détail.
+                Reconnu comme un restaurant tunisien incontournable à La Marsa, Coin Margoum prépare chaque plat avec le même soin qu&apos;un tapis tissé à la main. L&apos;artisanat de la cuisine tunisienne authentique se retrouve dans chaque détail.
               </p>
             </Reveal>
 
