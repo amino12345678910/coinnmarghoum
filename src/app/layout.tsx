@@ -5,13 +5,15 @@ import LenisProvider from "@/components/layout/LenisProvider";
 import Noise from "@/components/ui/Noise";
 import Cursor from "@/components/ui/Cursor";
 import Preloader from "@/components/layout/Preloader";
+import Footer from "@/components/sections/Footer";
+import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces" });
 
 export const metadata: Metadata = {
-  title: "Coin Margoum - Restaurant Tunisien",
-  description: "Où la saveur tunisienne se tisse.",
+  title: "Coin Margoum | Restaurant Tunisien à La Marsa",
+  description: "Où la saveur tunisienne se tisse. Un voyage culinaire authentique au cœur de La Marsa.",
 };
 
 export default function RootLayout({
@@ -21,12 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${inter.variable} ${fraunces.variable}`}>
-      <body className="font-body bg-cream text-charcoal antialiased selection:bg-terracotta selection:text-cream">
+      <body className="font-body bg-cream text-charcoal antialiased selection:bg-terracotta selection:text-cream overflow-x-hidden">
         <Preloader />
         <Noise />
         <Cursor />
         <LenisProvider>
           {children}
+          <Footer />
+          <FloatingWhatsApp />
         </LenisProvider>
       </body>
     </html>
