@@ -117,13 +117,13 @@ export default function Hero() {
       </div>
 
       {/* Main Text Overlay */}
-      <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center pt-16 pb-24 lg:pb-0">
+      <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center pt-20 pb-32">
         <div ref={textRef} className="max-w-5xl">
           <span className="fade-in mb-6 block text-xs md:text-sm font-semibold tracking-[0.3em] text-brass uppercase opacity-0 translate-y-4">
             La Marsa · Tunisie
           </span>
           
-          <h1 className="mb-8 font-heading text-5xl md:text-7xl lg:text-8xl text-cream leading-[1.1] tracking-tight">
+          <h1 className="mb-6 font-heading text-6xl md:text-8xl lg:text-9xl text-cream leading-[0.9] tracking-tight">
             {"Où la saveur tunisienne se ".split(" ").map((word, i) => (
               <span key={i} className="inline-block overflow-hidden pb-2 mr-3 md:mr-4">
                 <span className="word inline-block translate-y-[110%]">{word}</span>
