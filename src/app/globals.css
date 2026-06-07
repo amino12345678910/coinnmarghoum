@@ -28,6 +28,7 @@ body {
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 88px;
   scrollbar-color: rgba(201, 162, 75, 0.78) rgba(26, 23, 20, 0.08);
   scrollbar-width: thin;
 }

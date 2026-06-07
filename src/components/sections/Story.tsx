@@ -42,8 +42,8 @@ export default function Story() {
           ease: "none",
           scrollTrigger: {
             trigger: imageContainerRef.current,
-            start: "top 60%",
-            end: "bottom 40%",
+            start: "top 82%",
+            end: "top 38%",
             scrub: true,
           },
         });

@@ -64,7 +64,8 @@ export default function SignatureMenu() {
 
     const firstCard = track.querySelector<HTMLElement>("[data-dish-card]");
     const cardWidth = firstCard?.offsetWidth || 420;
-    const gap = 40;
+    const styles = window.getComputedStyle(track);
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || "40") || 40;
 
     track.scrollBy({
       left: direction === "right" ? cardWidth + gap : -(cardWidth + gap),
@@ -118,22 +119,23 @@ export default function SignatureMenu() {
         </Reveal>
       </div>
 
-      <div className="w-full pb-24 md:pb-32">
+      <div className="relative w-full pb-24 md:pb-32">
         <div
           ref={trackRef}
           onScroll={updateScrollState}
-          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto px-6 pb-8 md:px-12 lg:gap-10 lg:px-24"
+          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 pl-8 pr-[22vw] md:pl-16 md:pr-[24vw] lg:gap-10 lg:pl-[max(6rem,calc((100vw-80rem)/2+6rem))] lg:pr-[18vw]"
         >
           {signatureDishes.map((dish) => (
             <div
               key={dish.id}
               data-dish-card
-              className="w-[82vw] max-w-md flex-none snap-start transition-transform duration-500 sm:w-[420px]"
+              className="w-[78vw] max-w-md flex-none snap-start transition-transform duration-500 sm:w-[420px] lg:w-[430px]"
             >
               <DishCard dish={dish} />
             </div>
           ))}
         </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-deep-blue via-deep-blue/70 to-transparent backdrop-blur-[1px] md:w-36 lg:w-44" />
       </div>
     </section>
   );
