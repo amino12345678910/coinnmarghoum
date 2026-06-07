@@ -5,6 +5,7 @@ import LenisProvider from "@/components/layout/LenisProvider";
 import Noise from "@/components/ui/Noise";
 import Cursor from "@/components/ui/Cursor";
 import Preloader from "@/components/layout/Preloader";
+import PremiumNavigation from "@/components/layout/PremiumNavigation";
 import Footer from "@/components/sections/Footer";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
 import FoodConcierge from "@/components/ui/FoodConcierge";
@@ -149,6 +150,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Preloader />
+        <PremiumNavigation />
         <Noise />
         <Cursor />
         <LenisProvider>

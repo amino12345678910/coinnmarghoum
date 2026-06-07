@@ -77,7 +77,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-charcoal">
+    <section id="accueil" ref={containerRef} className="relative h-screen w-full overflow-hidden bg-charcoal">
       {/* Margoum diamond border framing */}
       <div className="pointer-events-none absolute inset-4 md:inset-6 z-20 border border-brass/20" />
       <div className="pointer-events-none absolute inset-4 md:inset-6 z-20 overflow-hidden">
