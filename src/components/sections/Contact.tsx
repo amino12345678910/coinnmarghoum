@@ -94,38 +94,19 @@ export default function Contact() {
                   </div>
                 )}
 
-                <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  {socialLinks.whatsapp && (
-                    <a
-                      href={socialLinks.whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-center gap-3 rounded-full border border-brass bg-brass px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-charcoal shadow-lg shadow-brass/10 transition-all hover:-translate-y-0.5 hover:bg-cream"
-                    >
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-charcoal text-[10px] text-brass">WA</span>
-                      WhatsApp
-                    </a>
-                  )}
+                <div className="mt-2 flex flex-wrap">
                   {socialLinks.instagram && (
                     <a
                       href={socialLinks.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center justify-center gap-3 rounded-full border border-cream/20 bg-cream/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-all hover:-translate-y-0.5 hover:border-brass hover:text-brass"
+                      className="group inline-flex items-center justify-center gap-3 rounded-full border border-cream/20 bg-cream/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-all hover:-translate-y-0.5 hover:border-brass hover:text-brass"
                     >
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-terracotta text-[10px] text-cream">IG</span>
+                      <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-[10px] text-white shadow-sm">
+                        <span className="h-3.5 w-3.5 rounded-[4px] border-2 border-white" />
+                        <span className="absolute right-2 top-2 h-1 w-1 rounded-full bg-white" />
+                      </span>
                       Instagram
-                    </a>
-                  )}
-                  {socialLinks.facebook && (
-                    <a
-                      href={socialLinks.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-center gap-3 rounded-full border border-cream/20 bg-cream/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-all hover:-translate-y-0.5 hover:border-brass hover:text-brass"
-                    >
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-deep-blue text-[10px] text-cream">FB</span>
-                      Facebook
                     </a>
                   )}
                 </div>
