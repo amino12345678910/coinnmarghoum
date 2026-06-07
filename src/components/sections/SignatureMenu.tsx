@@ -123,8 +123,9 @@ export default function SignatureMenu() {
         <div
           ref={trackRef}
           onScroll={updateScrollState}
-          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 pl-10 pr-[22vw] md:pl-20 md:pr-[24vw] lg:gap-10 lg:pl-32 lg:pr-[18vw] xl:pl-44 2xl:pl-56"
+          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 pr-[22vw] md:pr-[24vw] lg:gap-10 lg:pr-[18vw]"
         >
+          <div className="w-10 flex-none md:w-20 lg:w-32 xl:w-44 2xl:w-56" aria-hidden="true" />
           {signatureDishes.map((dish) => (
             <div
               key={dish.id}
