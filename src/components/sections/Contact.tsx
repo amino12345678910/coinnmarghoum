@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "@/components/ui/Reveal";
-import { getPhoneHref, getWhatsAppUrl } from "@/config/site";
+import { getPhoneHref, getSocialLinks, getWhatsAppUrl } from "@/config/site";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
@@ -19,6 +19,7 @@ export default function Contact() {
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const phoneHref = getPhoneHref();
   const whatsappUrl = getWhatsAppUrl();
+  const socialLinks = getSocialLinks();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,6 +93,42 @@ export default function Contact() {
                     )}
                   </div>
                 )}
+
+                <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {socialLinks.whatsapp && (
+                    <a
+                      href={socialLinks.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-center gap-3 rounded-full border border-brass bg-brass px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-charcoal shadow-lg shadow-brass/10 transition-all hover:-translate-y-0.5 hover:bg-cream"
+                    >
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-charcoal text-[10px] text-brass">WA</span>
+                      WhatsApp
+                    </a>
+                  )}
+                  {socialLinks.instagram && (
+                    <a
+                      href={socialLinks.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-center gap-3 rounded-full border border-cream/20 bg-cream/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-all hover:-translate-y-0.5 hover:border-brass hover:text-brass"
+                    >
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-terracotta text-[10px] text-cream">IG</span>
+                      Instagram
+                    </a>
+                  )}
+                  {socialLinks.facebook && (
+                    <a
+                      href={socialLinks.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-center gap-3 rounded-full border border-cream/20 bg-cream/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-cream transition-all hover:-translate-y-0.5 hover:border-brass hover:text-brass"
+                    >
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-deep-blue text-[10px] text-cream">FB</span>
+                      Facebook
+                    </a>
+                  )}
+                </div>
               </div>
             </Reveal>
 
@@ -173,7 +210,7 @@ export default function Contact() {
                     <button
                       type="submit"
                       disabled={status === "submitting"}
-                      className="mt-6 bg-terracotta text-white py-4 uppercase tracking-widest text-sm font-semibold hover:bg-brass hover:text-charcoal transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
+                      className="mt-6 rounded-full border border-terracotta bg-terracotta py-4 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-xl shadow-terracotta/20 transition-all hover:-translate-y-0.5 hover:bg-brass hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
                     >
                       {status === "submitting" ? "Envoi en cours..." : "Confirmer la demande"}
                     </button>

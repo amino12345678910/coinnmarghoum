@@ -1,22 +1,22 @@
-const SYSTEM_PROMPT = `Tu es "Margoum", l'hôte virtuel chaleureux et accueillant du restaurant tunisien haut de gamme "Coin Margoum", situé à La Marsa (Tunisie).
-Ta personnalité est élégante, respectueuse, et passionnée par la cuisine tunisienne. Tu utilises un ton chaleureux, souvent avec un petit mot en arabe tunisien (ex: Marhaba, Aslema, Aychek, Dima).
+const SYSTEM_PROMPT = `Tu es "Margoum", l'hote virtuel chaleureux et accueillant du restaurant tunisien haut de gamme "Coin Margoum", situe a La Marsa (Tunisie).
 
 Informations sur le restaurant :
 - Emplacement : 12 Rue Sidi Abdelaziz, La Marsa, 2070, Tunisie.
 - Horaires : Lundi au Jeudi (12h-23h), Vendredi au Dimanche (12h-00h).
-- Spécialités : Couscous Royal, Riz Djerbien, Ojja Merguez, Brik à l'œuf.
-- Ambiance : Authentique, décoration inspirée des tapis tissés Margoum, ambiance musicale douce.
+- Specialites : Couscous Royal, Riz Djerbien, Ojja Merguez, Brik a l'oeuf.
+- Prix indicatifs : entrees 11-18 TND, plats 26-46 TND, douceurs 12-18 TND, boissons 6-9 TND.
+- Ambiance : authentique, decoration inspiree des tapis tisses Margoum, ambiance musicale douce.
 
-Ton rôle :
+Ton role :
 - Conseiller les clients sur le menu.
-- Expliquer le niveau d'épices (doux, moyen, piquant).
-- Proposer des recommandations (ex: "Le thé à la menthe est parfait avec la brik").
-- Aider à la réservation (informer qu'on peut réserver via le formulaire).
+- Expliquer le niveau d'epices.
+- Proposer des recommandations.
+- Aider a la reservation via le formulaire.
 
 Instructions :
-- Sois bref et concis (1 à 3 phrases maximum).
+- Sois bref et concis (1 a 3 phrases maximum).
 - Ne propose pas de liens ou de code.
-- Si on te pose une question hors de la restauration, redirige poliment vers le restaurant.
+- Si on te pose une question hors restauration, redirige poliment vers le restaurant.
 `;
 
 const JSON_HEADERS = { "Content-Type": "application/json" };
@@ -66,8 +66,8 @@ function sanitizeMessages(rawMessages: unknown) {
       return (
         message &&
         typeof message === "object" &&
-        ("role" in message) &&
-        ("content" in message) &&
+        "role" in message &&
+        "content" in message &&
         ((message as { role: unknown }).role === "user" || (message as { role: unknown }).role === "assistant") &&
         typeof (message as { content: unknown }).content === "string"
       );
@@ -80,19 +80,37 @@ function sanitizeMessages(rawMessages: unknown) {
     .filter((message) => message.content.length > 0);
 }
 
+function fallbackReply(messages: Array<{ role: "user" | "assistant"; content: string }>) {
+  const lastUserMessage =
+    [...messages].reverse().find((message) => message.role === "user")?.content.toLowerCase() || "";
+
+  if (lastUserMessage.includes("veget") || lastUserMessage.includes("sans viande")) {
+    return "Je vous conseille le couscous aux legumes, le kafteji maison ou le lablabi soigne. Ce sont des choix genereux et bien parfumes.";
+  }
+
+  if (lastUserMessage.includes("prix") || lastUserMessage.includes("coute") || lastUserMessage.includes("combien")) {
+    return "Les entrees commencent autour de 11 TND, les plats signatures vont de 29 a 46 TND, et le Couscous Royal est a 42 TND.";
+  }
+
+  if (lastUserMessage.includes("reserver") || lastUserMessage.includes("reservation") || lastUserMessage.includes("table")) {
+    return "Pour reserver, utilisez le formulaire Contact & Reservation. L'equipe vous recontacte rapidement pour confirmer.";
+  }
+
+  if (lastUserMessage.includes("epice") || lastUserMessage.includes("piquant") || lastUserMessage.includes("harissa")) {
+    return "L'Ojja Merguez est la plus relevee, le Couscous Royal reste equilibre, et le Riz Djerbien est surtout parfume.";
+  }
+
+  return "Marhaba ! Pour une premiere visite, je recommande Brik a l'oeuf, Couscous Royal ou Riz Djerbien, puis un the a la menthe.";
+}
+
 exports.handler = async function (event: any) {
   if (event.httpMethod !== "POST") {
-    return json(405, { reply: "Méthode non autorisée." });
+    return json(405, { reply: "Methode non autorisee." });
   }
 
   const ip = getClientIp(event);
   if (isRateLimited(ip)) {
-    return json(429, { reply: "Le concierge reçoit beaucoup de demandes. Veuillez réessayer dans un instant." });
-  }
-
-  const apiKey = process.env.MISTRAL_API_KEY;
-  if (!apiKey) {
-    return json(503, { reply: "Désolé, l'hôte virtuel est temporairement indisponible." });
+    return json(429, { reply: "Le concierge recoit beaucoup de demandes. Veuillez reessayer dans un instant." });
   }
 
   try {
@@ -100,21 +118,23 @@ exports.handler = async function (event: any) {
     const messages = sanitizeMessages(body.messages);
 
     if (messages.length === 0) {
-      return json(400, { reply: "Envoyez une question pour démarrer la conversation." });
+      return json(400, { reply: "Envoyez une question pour demarrer la conversation." });
+    }
+
+    const apiKey = process.env.MISTRAL_API_KEY;
+    if (!apiKey) {
+      return json(200, { reply: fallbackReply(messages), mode: "fallback" });
     }
 
     const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: process.env.MISTRAL_MODEL || "mistral-tiny",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages,
-        ],
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
         temperature: 0.7,
         max_tokens: 150,
       }),
@@ -134,6 +154,9 @@ exports.handler = async function (event: any) {
     return json(200, { reply });
   } catch (error) {
     console.error(error);
-    return json(500, { reply: "Désolé, je suis un peu surchargé en cuisine ! Veuillez réessayer dans un instant." });
+    return json(200, {
+      reply: "Je reste disponible pour vous guider: Couscous Royal, Riz Djerbien et Ojja Merguez sont les grands favoris de la maison.",
+      mode: "fallback",
+    });
   }
 };

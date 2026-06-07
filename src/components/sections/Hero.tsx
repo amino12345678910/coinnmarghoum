@@ -143,13 +143,13 @@ export default function Hero() {
           <div className="fade-in flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#contact"
-              className="inline-flex w-full items-center justify-center rounded-sm bg-terracotta px-8 py-3 text-sm font-medium text-cream transition-colors hover:bg-terracotta/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-full border border-terracotta bg-terracotta px-8 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-2xl shadow-terracotta/25 transition-all hover:-translate-y-0.5 hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:w-auto"
             >
               Réserver une table
             </a>
             <a
               href="#menu"
-              className="inline-flex w-full items-center justify-center rounded-sm border border-cream/20 bg-transparent px-8 py-3 text-sm font-medium text-cream transition-colors hover:bg-cream/10 hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-full border border-cream/25 bg-cream/10 px-8 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-2xl shadow-charcoal/20 backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-brass hover:bg-cream hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:w-auto"
             >
               Voir le menu
             </a>

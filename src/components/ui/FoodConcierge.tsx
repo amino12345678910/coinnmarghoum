@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { X, Send, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { CalendarCheck, Send, Sparkles, X } from "lucide-react";
 
 type Message = {
   role: "user" | "assistant";
@@ -11,30 +11,52 @@ type Message = {
 
 const SUGGESTIONS = [
   "Que me recommandez-vous ?",
-  "Plats végétariens ?",
-  "Réserver une table"
+  "Plats vegetariens ?",
+  "Combien coute un couscous ?",
+  "Reserver une table",
 ];
+
+function localConciergeReply(text: string) {
+  const question = text.toLowerCase();
+
+  if (question.includes("veget") || question.includes("sans viande")) {
+    return "Je vous conseille le couscous aux legumes, le kafteji maison ou le lablabi soigne. Ce sont des choix solaires, genereux et bien parfumes.";
+  }
+
+  if (question.includes("prix") || question.includes("coute") || question.includes("combien")) {
+    return "Les entrees commencent autour de 11 TND, les plats signatures vont de 29 a 46 TND, et le Couscous Royal est a 42 TND.";
+  }
+
+  if (question.includes("reserver") || question.includes("reservation") || question.includes("table")) {
+    return "Pour reserver, utilisez le formulaire Contact & Reservation. Indiquez la date, l'heure, le nombre de personnes et l'equipe vous confirme rapidement.";
+  }
+
+  if (question.includes("epice") || question.includes("piquant") || question.includes("harissa")) {
+    return "L'harissa est maitrisee: l'Ojja Merguez est la plus relevee, le Couscous Royal reste genereux mais equilibre, et le Riz Djerbien est surtout parfume.";
+  }
+
+  return "Marhaba ! Pour une premiere visite, je recommande Brik a l'oeuf, Couscous Royal ou Riz Djerbien, puis un the a la menthe. C'est le meilleur chemin pour decouvrir la maison.";
+}
 
 export default function FoodConcierge() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Marhaba ! Je suis Margoum, votre hôte. Que puis-je faire pour vous aujourd'hui ?" }
+    {
+      role: "assistant",
+      content: "Marhaba ! Je suis Margoum, votre hote virtuel. Je peux conseiller un plat, expliquer les prix ou vous guider vers une reservation.",
+    },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    if (isOpen) scrollToBottom();
+    if (isOpen) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen]);
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
-    
+
     const newMessages = [...messages, { role: "user" as const, content: text }];
     setMessages(newMessages);
     setInput("");
@@ -46,20 +68,16 @@ export default function FoodConcierge() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),
       });
-      
-      if (!res.ok) {
-        throw new Error("Concierge request failed");
-      }
+
+      if (!res.ok) throw new Error("Concierge request failed");
 
       const data = await res.json();
-      const reply = typeof data.reply === "string" ? data.reply : "Désolé, je n'ai pas pu préparer une réponse claire.";
-      
+      const reply = typeof data.reply === "string" ? data.reply : localConciergeReply(text);
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-      setIsTyping(false);
-      
     } catch {
+      setMessages((prev) => [...prev, { role: "assistant", content: localConciergeReply(text) }]);
+    } finally {
       setIsTyping(false);
-      setMessages((prev) => [...prev, { role: "assistant", content: "Désolé, je rencontre des difficultés de connexion. Veuillez réessayer." }]);
     }
   };
 
@@ -67,10 +85,11 @@ export default function FoodConcierge() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-50 bg-charcoal border-2 border-brass text-brass p-4 rounded-full shadow-2xl hover:bg-brass hover:text-charcoal transition-all duration-300 group flex items-center justify-center hover:scale-105"
+        className="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full border border-brass bg-charcoal text-brass shadow-2xl shadow-charcoal/30 transition-all duration-300 hover:-translate-y-1 hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal md:bottom-10 md:right-10"
         aria-label="Ouvrir le concierge virtuel"
       >
-        <Sparkles size={24} className="relative z-10" />
+        <span className="absolute inset-1 rounded-full border border-brass/20" />
+        <Sparkles size={25} className="relative z-10" />
       </button>
 
       <AnimatePresence>
@@ -80,99 +99,113 @@ export default function FoodConcierge() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-0 md:inset-auto md:bottom-28 md:left-10 z-50 w-full md:w-[380px] h-full md:h-[600px] bg-cream shadow-2xl md:rounded-xl overflow-hidden flex flex-col border border-brass/30"
+            className="fixed inset-0 z-50 flex h-full w-full flex-col overflow-hidden bg-cream shadow-2xl md:inset-auto md:bottom-28 md:right-10 md:h-[620px] md:w-[400px] md:rounded-xl md:border md:border-brass/30"
           >
-            {/* Header */}
-            <div className="bg-charcoal text-cream p-4 flex justify-between items-center relative overflow-hidden shrink-0">
+            <div className="relative flex shrink-0 items-center justify-between overflow-hidden bg-charcoal p-4 text-cream">
               <div className="absolute inset-0 bg-margoum-pattern opacity-10 mix-blend-overlay pointer-events-none" />
-              <div className="flex items-center gap-3 relative z-10">
-                <div className="w-10 h-10 bg-brass rounded-full flex items-center justify-center text-charcoal shadow-md">
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brass text-charcoal shadow-md">
                   <Sparkles size={20} />
                 </div>
                 <div>
                   <h3 className="font-heading text-lg leading-tight">Margoum</h3>
-                  <p className="text-[10px] text-brass tracking-wider uppercase">Votre Hôte Virtuel</p>
+                  <p className="text-[10px] uppercase tracking-wider text-brass">Hote virtuel</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
-                className="text-cream/50 hover:text-terracotta transition-colors relative z-10"
+                className="relative z-10 text-cream/60 transition-colors hover:text-terracotta"
                 aria-label="Fermer le concierge virtuel"
               >
                 <X size={24} />
               </button>
             </div>
 
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 bg-cream">
-              {messages.map((msg, i) => (
-                <div 
-                  key={i} 
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div 
-                    className={`max-w-[85%] p-3 text-sm leading-relaxed ${
-                      msg.role === "user" 
-                        ? "bg-brass text-charcoal rounded-2xl rounded-br-sm shadow-sm" 
-                        : "bg-white text-charcoal border border-charcoal/5 rounded-2xl rounded-bl-sm shadow-sm"
-                    }`}
-                  >
-                    {msg.content}
+            <div className="flex-1 overflow-y-auto bg-cream p-4">
+              <div className="mb-4 rounded-lg border border-brass/20 bg-white/70 p-3 text-xs leading-relaxed text-charcoal/65">
+                <span className="font-semibold text-deep-blue">Conseil instantane.</span> Le concierge repond avec IA en production si la cle Netlify est configuree, sinon il garde une reponse locale utile.
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {messages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[86%] rounded-2xl p-3 text-sm leading-relaxed shadow-sm ${
+                        msg.role === "user"
+                          ? "rounded-br-sm bg-deep-blue text-cream"
+                          : "rounded-bl-sm border border-charcoal/5 bg-white text-charcoal"
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
                   </div>
-                </div>
-              ))}
-              
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-white p-4 rounded-2xl rounded-bl-sm shadow-sm border border-charcoal/5 flex gap-1">
-                    <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1.5 h-1.5 bg-brass rounded-full" />
-                    <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} className="w-1.5 h-1.5 bg-brass rounded-full" />
-                    <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} className="w-1.5 h-1.5 bg-brass rounded-full" />
+                ))}
+
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="flex gap-1 rounded-2xl rounded-bl-sm border border-charcoal/5 bg-white p-4 shadow-sm">
+                      {[0, 0.2, 0.4].map((delay) => (
+                        <motion.div
+                          key={delay}
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{ repeat: Infinity, duration: 0.6, delay }}
+                          className="h-1.5 w-1.5 rounded-full bg-brass"
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
+                )}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
 
-            {/* Suggestions */}
             {messages.length === 1 && (
-              <div className="px-4 py-3 flex flex-wrap gap-2 bg-cream/90 backdrop-blur-sm shrink-0 border-t border-charcoal/5">
-                {SUGGESTIONS.map((sug, i) => (
+              <div className="flex shrink-0 flex-wrap gap-2 border-t border-charcoal/5 bg-cream/95 px-4 py-3 backdrop-blur-sm">
+                {SUGGESTIONS.map((suggestion) => (
                   <button
-                    key={i}
-                    onClick={() => handleSend(sug)}
+                    key={suggestion}
+                    onClick={() => handleSend(suggestion)}
                     disabled={isTyping}
-                    className="text-[11px] md:text-xs bg-white border border-charcoal/10 text-charcoal px-3 py-1.5 rounded-full hover:border-brass hover:text-brass transition-colors text-left shadow-sm"
+                    className="rounded-full border border-charcoal/10 bg-white px-3 py-1.5 text-left text-[11px] text-charcoal shadow-sm transition-colors hover:border-brass hover:text-terracotta disabled:opacity-50 md:text-xs"
                   >
-                    {sug}
+                    {suggestion}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Input Area */}
-            <form 
-              onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
-              className="p-4 bg-white border-t border-charcoal/5 flex gap-2 shrink-0 items-center"
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSend(input);
+              }}
+              className="flex shrink-0 items-center gap-2 border-t border-charcoal/5 bg-white p-4"
             >
+              <a
+                href="#contact"
+                onClick={() => setIsOpen(false)}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brass/40 text-brass transition-colors hover:bg-brass hover:text-charcoal"
+                aria-label="Aller a la reservation"
+              >
+                <CalendarCheck size={18} />
+              </a>
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Posez votre question..."
                 aria-label="Question pour le concierge virtuel"
-                className="flex-1 bg-cream/30 border border-charcoal/10 rounded-full px-4 py-3 text-sm text-charcoal focus:outline-none focus:border-brass focus:ring-1 focus:ring-brass transition-all"
+                className="min-w-0 flex-1 rounded-full border border-charcoal/10 bg-cream/40 px-4 py-3 text-sm text-charcoal transition-all placeholder:text-charcoal/40 focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
-                className="w-11 h-11 bg-charcoal rounded-full flex items-center justify-center text-brass shrink-0 hover:bg-brass hover:text-charcoal transition-colors disabled:opacity-50 disabled:hover:bg-charcoal disabled:hover:text-brass"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-charcoal text-brass transition-colors hover:bg-brass hover:text-charcoal disabled:opacity-50 disabled:hover:bg-charcoal disabled:hover:text-brass"
                 aria-label="Envoyer la question"
               >
                 <Send size={18} className="ml-0.5" />
               </button>
             </form>
-
           </motion.div>
         )}
       </AnimatePresence>

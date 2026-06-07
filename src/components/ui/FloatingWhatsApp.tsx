@@ -30,7 +30,7 @@ export default function FloatingWhatsApp() {
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 bg-brass text-charcoal p-4 rounded-full shadow-[0_10px_25px_rgba(200,160,90,0.4)] hover:bg-white hover:text-terracotta transition-colors duration-300 group"
+          className="fixed bottom-24 right-6 z-50 rounded-full bg-brass p-4 text-charcoal shadow-[0_10px_25px_rgba(200,160,90,0.4)] transition-colors duration-300 hover:bg-white hover:text-terracotta md:bottom-28 md:right-10"
           aria-label="Contact us on WhatsApp"
         >
           {/* Subtle pulse ring */}

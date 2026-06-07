@@ -20,6 +20,14 @@ export default function FullMenu() {
     () => menuCategories.find((category) => category.id === activeId) || menuCategories[0],
     [activeId]
   );
+  const averagePrice = useMemo(
+    () =>
+      Math.round(
+        activeCategory.items.reduce((total, item) => total + item.price, 0) /
+          activeCategory.items.length
+      ),
+    [activeCategory]
+  );
   const ActiveIcon = categoryIcons[activeCategory.id];
 
   return (
@@ -34,7 +42,7 @@ export default function FullMenu() {
             <div>
               <span className="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-terracotta">
                 <span className="h-px w-10 bg-terracotta/60" />
-                La carte tissée
+                La carte tissee
               </span>
               <h2 className="font-heading text-5xl leading-[0.95] text-deep-blue md:text-6xl xl:text-7xl">
                 <span className="block">Un menu qui se lit</span>
@@ -44,11 +52,11 @@ export default function FullMenu() {
 
             <div className="border-l border-brass/30 pl-6 text-charcoal/70 lg:pl-8">
               <p className="text-base leading-relaxed md:text-lg">
-                Choisissez un fil, suivez les parfums. Chaque famille garde son rythme :
-                croustillant, vapeur, sauce lente, menthe fraîche.
+                Choisissez un fil, suivez les parfums. Chaque famille garde son rythme:
+                croustillant, vapeur, sauce lente, menthe fraiche.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {["Harissa maîtrisée", "À partager", "Cuisine tunisienne"].map((label) => (
+                {["Harissa maitrisee", "A partager", "Cuisine tunisienne"].map((label) => (
                   <span key={label} className="border border-charcoal/10 bg-white/50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-charcoal/60">
                     {label}
                   </span>
@@ -60,7 +68,7 @@ export default function FullMenu() {
 
         <Reveal delay={0.1}>
           <div className="mt-14 border-y border-charcoal/10 py-4">
-            <div role="tablist" aria-label="Catégories du menu" className="menu-carousel flex gap-3 overflow-x-auto pb-3">
+            <div role="tablist" aria-label="Categories du menu" className="menu-carousel flex gap-3 overflow-x-auto pb-3">
               {menuCategories.map((category, index) => {
                 const Icon = categoryIcons[category.id];
                 const isActive = category.id === activeId;
@@ -116,6 +124,25 @@ export default function FullMenu() {
                   {activeCategory.description}
                 </p>
 
+                <div className="mt-8 grid grid-cols-2 gap-3">
+                  <div className="border border-brass/25 bg-cream/5 p-4">
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-brass/80">
+                      Prix moyen
+                    </span>
+                    <strong className="mt-2 block font-heading text-3xl text-cream">
+                      {averagePrice} TND
+                    </strong>
+                  </div>
+                  <div className="border border-brass/25 bg-cream/5 p-4">
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-brass/80">
+                      Selection
+                    </span>
+                    <strong className="mt-2 block font-heading text-3xl text-cream">
+                      {activeCategory.items.length} plats
+                    </strong>
+                  </div>
+                </div>
+
                 <div className="mt-10 grid grid-cols-4 gap-2" aria-hidden="true">
                   {[0, 1, 2, 3].map((item) => (
                     <span key={item} className="aspect-square border border-brass/30 bg-brass/10 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]" />
@@ -124,9 +151,9 @@ export default function FullMenu() {
 
                 <a
                   href="#contact"
-                  className="mt-10 inline-flex items-center gap-3 border border-brass px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-brass transition-colors hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
+                  className="mt-10 inline-flex items-center gap-3 rounded-full border border-brass px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-brass transition-colors hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
                 >
-                  Réserver cette table
+                  Reserver cette table
                   <UtensilsCrossed size={16} />
                 </a>
               </div>
@@ -143,15 +170,20 @@ export default function FullMenu() {
               {activeCategory.items.map((item) => (
                 <article key={item.name} className="group grid gap-5 py-7 transition-colors md:grid-cols-[1fr_auto] md:items-start">
                   <div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h4 className="font-heading text-3xl leading-none text-deep-blue md:text-4xl">
-                        {item.name}
-                      </h4>
-                      {item.signature && (
-                        <span className="border border-terracotta/30 bg-terracotta/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-terracotta">
-                          Maison
-                        </span>
-                      )}
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h4 className="font-heading text-3xl leading-none text-deep-blue md:text-4xl">
+                          {item.name}
+                        </h4>
+                        {item.signature && (
+                          <span className="border border-terracotta/30 bg-terracotta/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-terracotta">
+                            Maison
+                          </span>
+                        )}
+                      </div>
+                      <span className="shrink-0 border border-brass/40 bg-brass/10 px-3 py-1.5 font-heading text-2xl leading-none text-deep-blue">
+                        {item.price} TND
+                      </span>
                     </div>
                     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-charcoal/70 md:text-base">
                       {item.description}
@@ -170,6 +202,30 @@ export default function FullMenu() {
             </div>
           </Reveal>
         </div>
+
+        <Reveal delay={0.25}>
+          <div className="mt-14 grid gap-6 border border-brass/30 bg-white/55 p-6 shadow-xl shadow-charcoal/5 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-terracotta">
+                Experience premium
+              </span>
+              <h3 className="mt-3 font-heading text-3xl leading-tight text-deep-blue md:text-4xl">
+                Menu degustation Margoum
+              </h3>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-charcoal/70 md:text-base">
+                Une selection de 5 moments: kemia, entree chaude, plat signature, douceur et the a la menthe.
+                Ideal pour decouvrir la maison sans hesiter devant la carte.
+              </p>
+            </div>
+            <a
+              href="#contact"
+              className="inline-flex items-center justify-center gap-3 rounded-full bg-deep-blue px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-lg shadow-deep-blue/20 transition-all hover:-translate-y-0.5 hover:bg-terracotta focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+            >
+              Demander le menu
+              <UtensilsCrossed size={16} />
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
