@@ -123,7 +123,7 @@ export default function SignatureMenu() {
         <div
           ref={trackRef}
           onScroll={updateScrollState}
-          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 pl-8 pr-[22vw] md:pl-16 md:pr-[24vw] lg:gap-10 lg:pl-[max(6rem,calc((100vw-80rem)/2+6rem))] lg:pr-[18vw]"
+          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto pb-8 pl-8 pr-[22vw] md:pl-16 md:pr-[24vw] lg:gap-10 lg:pl-[max(8rem,calc((100vw-80rem)/2+8rem))] lg:pr-[18vw] xl:pl-[max(10rem,calc((100vw-80rem)/2+10rem))]"
         >
           {signatureDishes.map((dish) => (
             <div
