@@ -31,7 +31,7 @@ export default function Preloader() {
       // Animate percentage text and bottom line loader
       tl.to(counter, {
         value: 100,
-        duration: 2,
+        duration: 1,
         ease: "power3.inOut",
         onUpdate: () => {
           if (percentRef.current) {
@@ -42,7 +42,7 @@ export default function Preloader() {
 
       tl.to(lineRef.current, {
         width: "100%",
-        duration: 2,
+        duration: 1,
         ease: "power3.inOut",
       }, "<");
 
@@ -53,7 +53,7 @@ export default function Preloader() {
         
         tl.to(pathRef.current, {
           strokeDashoffset: 0,
-          duration: 2,
+          duration: 1,
           ease: "power3.inOut",
         }, "<");
         
@@ -69,7 +69,7 @@ export default function Preloader() {
       tl.to([diamondRef.current, textRef.current, percentRef.current, lineRef.current], {
         opacity: 0,
         y: -20,
-        duration: 0.6,
+        duration: 0.35,
         stagger: 0.1,
         ease: "power2.inOut",
       }, "+=0.2");
@@ -77,7 +77,7 @@ export default function Preloader() {
       // Slide out the entire container upwards, revealing the hero
       tl.to(containerRef.current, {
         yPercent: -100,
-        duration: 1.2,
+        duration: 0.6,
         ease: "power4.inOut",
       }, "-=0.2");
 
@@ -93,7 +93,6 @@ export default function Preloader() {
     >
       {/* Subtle Textures */}
       <div className="absolute inset-0 bg-margoum-pattern opacity-5 mix-blend-overlay pointer-events-none" />
-      <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-20 mix-blend-overlay pointer-events-none" />
       
       <div className="relative z-10 flex flex-col items-center h-full justify-center w-full">
         {/* Diamond SVG */}

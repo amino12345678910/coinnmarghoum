@@ -11,7 +11,7 @@ Ton rôle :
 - Conseiller les clients sur le menu.
 - Expliquer le niveau d'épices (doux, moyen, piquant).
 - Proposer des recommandations (ex: "Le thé à la menthe est parfait avec la brik").
-- Aider à la réservation (informer qu'on peut réserver via le formulaire ou WhatsApp).
+- Aider à la réservation (informer qu'on peut réserver via le formulaire).
 
 Instructions :
 - Sois bref et concis (1 à 3 phrases maximum).
@@ -19,56 +19,121 @@ Instructions :
 - Si on te pose une question hors de la restauration, redirige poliment vers le restaurant.
 `;
 
+const JSON_HEADERS = { "Content-Type": "application/json" };
+const MAX_MESSAGES = 12;
+const MAX_CONTENT_LENGTH = 600;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 12;
+
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function json(statusCode: number, body: Record<string, unknown>) {
+  return {
+    statusCode,
+    headers: JSON_HEADERS,
+    body: JSON.stringify(body),
+  };
+}
+
+function getClientIp(event: any) {
+  const forwardedFor = event.headers?.["x-forwarded-for"] || event.headers?.["X-Forwarded-For"];
+  return (
+    event.headers?.["x-nf-client-connection-ip"] ||
+    event.headers?.["X-Nf-Client-Connection-Ip"] ||
+    forwardedFor?.split(",")[0]?.trim() ||
+    "unknown"
+  );
+}
+
+function isRateLimited(ip: string) {
+  const now = Date.now();
+  const bucket = rateLimitBuckets.get(ip);
+
+  if (!bucket || bucket.resetAt <= now) {
+    rateLimitBuckets.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  bucket.count += 1;
+  return bucket.count > RATE_LIMIT_MAX_REQUESTS;
+}
+
+function sanitizeMessages(rawMessages: unknown) {
+  if (!Array.isArray(rawMessages)) return [];
+
+  return rawMessages
+    .filter((message) => {
+      return (
+        message &&
+        typeof message === "object" &&
+        ("role" in message) &&
+        ("content" in message) &&
+        ((message as { role: unknown }).role === "user" || (message as { role: unknown }).role === "assistant") &&
+        typeof (message as { content: unknown }).content === "string"
+      );
+    })
+    .slice(-MAX_MESSAGES)
+    .map((message) => ({
+      role: (message as { role: "user" | "assistant" }).role,
+      content: (message as { content: string }).content.trim().slice(0, MAX_CONTENT_LENGTH),
+    }))
+    .filter((message) => message.content.length > 0);
+}
+
 exports.handler = async function (event: any) {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+    return json(405, { reply: "Méthode non autorisée." });
+  }
+
+  const ip = getClientIp(event);
+  if (isRateLimited(ip)) {
+    return json(429, { reply: "Le concierge reçoit beaucoup de demandes. Veuillez réessayer dans un instant." });
+  }
+
+  const apiKey = process.env.MISTRAL_API_KEY;
+  if (!apiKey) {
+    return json(503, { reply: "Désolé, l'hôte virtuel est temporairement indisponible." });
   }
 
   try {
     const body = JSON.parse(event.body || "{}");
-    const messages = body.messages || [];
+    const messages = sanitizeMessages(body.messages);
 
-    const apiKey = process.env.MISTRAL_API_KEY || "WrxVMFzYyzU5k8Jr2JSDAhMWdFo0NYXC";
-
-    if (!apiKey) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ reply: "Désolé, l'hôte virtuel est en maintenance (API Key manquante). Contactez-nous sur WhatsApp pour réserver !" })
-      };
+    if (messages.length === 0) {
+      return json(400, { reply: "Envoyez une question pour démarrer la conversation." });
     }
 
     const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "mistral-tiny",
+        model: process.env.MISTRAL_MODEL || "mistral-tiny",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          ...messages.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }))
+          ...messages,
         ],
         temperature: 0.7,
         max_tokens: 150,
-      })
+      }),
     });
 
     if (!res.ok) {
-      throw new Error("Mistral API error");
+      throw new Error(`Mistral API error: ${res.status}`);
     }
 
     const data = await res.json();
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ reply: data.choices[0].message.content })
-    };
+    const reply = data?.choices?.[0]?.message?.content;
 
+    if (typeof reply !== "string" || reply.trim().length === 0) {
+      throw new Error("Mistral API returned an empty reply");
+    }
+
+    return json(200, { reply });
   } catch (error) {
     console.error(error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ reply: "Désolé, je suis un peu surchargé en cuisine ! Veuillez réessayer dans un instant." })
-    };
+    return json(500, { reply: "Désolé, je suis un peu surchargé en cuisine ! Veuillez réessayer dans un instant." });
   }
 };

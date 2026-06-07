@@ -47,9 +47,14 @@ export default function FoodConcierge() {
         body: JSON.stringify({ messages: newMessages }),
       });
       
+      if (!res.ok) {
+        throw new Error("Concierge request failed");
+      }
+
       const data = await res.json();
+      const reply = typeof data.reply === "string" ? data.reply : "Désolé, je n'ai pas pu préparer une réponse claire.";
       
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
       setIsTyping(false);
       
     } catch {
@@ -92,13 +97,14 @@ export default function FoodConcierge() {
               <button 
                 onClick={() => setIsOpen(false)}
                 className="text-cream/50 hover:text-terracotta transition-colors relative z-10"
+                aria-label="Fermer le concierge virtuel"
               >
                 <X size={24} />
               </button>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 bg-cream bg-[url('/images/paper-grain.png')]">
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 bg-cream">
               {messages.map((msg, i) => (
                 <div 
                   key={i} 
@@ -135,6 +141,7 @@ export default function FoodConcierge() {
                   <button
                     key={i}
                     onClick={() => handleSend(sug)}
+                    disabled={isTyping}
                     className="text-[11px] md:text-xs bg-white border border-charcoal/10 text-charcoal px-3 py-1.5 rounded-full hover:border-brass hover:text-brass transition-colors text-left shadow-sm"
                   >
                     {sug}
@@ -153,12 +160,14 @@ export default function FoodConcierge() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Posez votre question..."
+                aria-label="Question pour le concierge virtuel"
                 className="flex-1 bg-cream/30 border border-charcoal/10 rounded-full px-4 py-3 text-sm text-charcoal focus:outline-none focus:border-brass focus:ring-1 focus:ring-brass transition-all"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
                 className="w-11 h-11 bg-charcoal rounded-full flex items-center justify-center text-brass shrink-0 hover:bg-brass hover:text-charcoal transition-colors disabled:opacity-50 disabled:hover:bg-charcoal disabled:hover:text-brass"
+                aria-label="Envoyer la question"
               >
                 <Send size={18} className="ml-0.5" />
               </button>

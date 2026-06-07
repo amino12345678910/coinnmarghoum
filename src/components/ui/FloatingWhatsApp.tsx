@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getWhatsAppUrl } from "@/config/site";
 
 export default function FloatingWhatsApp() {
   const [isVisible, setIsVisible] = useState(false);
+  const whatsappUrl = getWhatsAppUrl();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +18,8 @@ export default function FloatingWhatsApp() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (!whatsappUrl) return null;
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -23,7 +27,7 @@ export default function FloatingWhatsApp() {
           initial={{ opacity: 0, y: 20, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.8 }}
-          href="https://wa.me/21600000000" // Placeholder number
+          href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 bg-brass text-charcoal p-4 rounded-full shadow-[0_10px_25px_rgba(200,160,90,0.4)] hover:bg-white hover:text-terracotta transition-colors duration-300 group"

@@ -9,19 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        terracotta: "var(--terracotta)",
-        "deep-blue": "var(--deep-blue)",
-        cream: "var(--cream)",
-        olive: "var(--olive)",
-        brass: "var(--brass)",
-        charcoal: "var(--charcoal)",
+        terracotta: "rgb(var(--terracotta-rgb) / <alpha-value>)",
+        "deep-blue": "rgb(var(--deep-blue-rgb) / <alpha-value>)",
+        cream: "rgb(var(--cream-rgb) / <alpha-value>)",
+        olive: "rgb(var(--olive-rgb) / <alpha-value>)",
+        brass: "rgb(var(--brass-rgb) / <alpha-value>)",
+        charcoal: "rgb(var(--charcoal-rgb) / <alpha-value>)",
       },
       fontFamily: {
         heading: ["var(--font-fraunces)", "serif"],
         body: ["var(--font-inter)", "sans-serif"],
       },
       backgroundImage: {
-        "paper-grain": "url('/images/paper-grain.png')",
         "margoum-pattern": "var(--margoum-pattern)",
       },
       keyframes: {

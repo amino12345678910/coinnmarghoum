@@ -2,25 +2,50 @@
 
 import { useState } from "react";
 import Reveal from "@/components/ui/Reveal";
+import { getPhoneHref, getWhatsAppUrl } from "@/config/site";
+
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
+
+const mapSrc =
+  "https://www.google.com/maps?q=12%20Rue%20Sidi%20Abdelaziz%2C%20La%20Marsa%202070%2C%20Tunisie&output=embed";
+
+function encodeFormData(formData: FormData) {
+  return new URLSearchParams(
+    Array.from(formData.entries()).map(([key, value]) => [key, String(value)])
+  ).toString();
+}
 
 export default function Contact() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const [status, setStatus] = useState<SubmitStatus>("idle");
+  const phoneHref = getPhoneHref();
+  const whatsappUrl = getWhatsAppUrl();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("submitting");
-    
-    // MOCK SUBMISSION
-    // TODO: Wire to a real backend (Netlify Function or API Route) for emails
-    setTimeout(() => {
+
+    try {
+      const form = e.currentTarget;
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encodeFormData(new FormData(form)),
+      });
+
+      if (!response.ok) {
+        throw new Error("Reservation form submission failed");
+      }
+
+      form.reset();
       setStatus("success");
-    }, 2000);
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
     <section id="contact" className="bg-deep-blue text-cream py-24 md:py-32 w-full relative border-t border-brass/10">
       <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl relative z-10">
-        
         <Reveal>
           <div className="text-center md:text-left mb-16">
             <span className="text-xs font-semibold tracking-[0.2em] text-brass uppercase mb-4 block">
@@ -33,18 +58,14 @@ export default function Contact() {
         </Reveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-          
-          {/* Left Column: Info & Form */}
           <div className="flex flex-col gap-12">
-            
             <Reveal delay={0.1}>
-              {/* Info Block */}
               <div className="flex flex-col gap-6">
                 <div>
                   <h3 className="font-heading text-2xl text-brass mb-3">Adresse</h3>
                   <p className="text-cream/80 font-light text-lg">12 Rue Sidi Abdelaziz<br/>La Marsa, 2070, Tunisie</p>
                 </div>
-                
+
                 <div>
                   <h3 className="font-heading text-2xl text-brass mb-3">Horaires</h3>
                   <ul className="text-cream/80 font-light text-lg flex flex-col gap-2 relative pl-4 border-l border-brass/30">
@@ -57,94 +78,135 @@ export default function Contact() {
                   </ul>
                 </div>
 
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <a href="https://wa.me/21600000000" className="px-6 py-3 border border-brass text-brass hover:bg-brass hover:text-charcoal transition-colors uppercase tracking-widest text-xs font-semibold">
-                    WhatsApp
-                  </a>
-                  <a href="tel:+21600000000" className="px-6 py-3 border border-cream text-cream hover:bg-white hover:text-charcoal transition-colors uppercase tracking-widest text-xs font-semibold">
-                    Appeler
-                  </a>
-                </div>
+                {(whatsappUrl || phoneHref) && (
+                  <div className="flex flex-wrap gap-4 mt-4">
+                    {whatsappUrl && (
+                      <a href={whatsappUrl} className="px-6 py-3 border border-brass text-brass hover:bg-brass hover:text-charcoal transition-colors uppercase tracking-widest text-xs font-semibold">
+                        WhatsApp
+                      </a>
+                    )}
+                    {phoneHref && (
+                      <a href={phoneHref} className="px-6 py-3 border border-cream text-cream hover:bg-white hover:text-charcoal transition-colors uppercase tracking-widest text-xs font-semibold">
+                        Appeler
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </Reveal>
 
             <Reveal delay={0.2}>
-              {/* Reservation Form */}
               <div className="bg-charcoal p-8 md:p-10 border border-white/5 rounded-sm relative overflow-hidden">
                 <h3 className="font-heading text-3xl text-white mb-8">Réserver une table</h3>
-                
+
                 {status === "success" ? (
-                  <div className="h-[300px] flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-700">
+                  <div className="h-[300px] flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-700" aria-live="polite">
                     <div className="w-16 h-16 mb-6 flex items-center justify-center border-2 border-brass rounded-full rotate-45">
                       <div className="w-8 h-8 bg-brass -rotate-45" />
                     </div>
-                    <h4 className="font-heading text-2xl text-brass mb-2">Demande Envoyée</h4>
+                    <h4 className="font-heading text-2xl text-brass mb-2">Demande envoyée</h4>
                     <p className="text-cream/70 font-light">
                       Notre équipe vous contactera très vite pour confirmer votre réservation.
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-6 relative z-10">
+                  <form
+                    name="reservation"
+                    method="POST"
+                    data-netlify="true"
+                    netlify-honeypot="bot-field"
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-6 relative z-10"
+                  >
+                    <input type="hidden" name="form-name" value="reservation" />
+                    <p className="hidden">
+                      <label>
+                        Ne pas remplir ce champ
+                        <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                      </label>
+                    </p>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <input required type="text" placeholder="Nom complet" className="bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
-                      <input required type="tel" placeholder="Téléphone" className="bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
+                      <div>
+                        <label className="sr-only" htmlFor="reservation-name">Nom complet</label>
+                        <input id="reservation-name" name="name" required type="text" autoComplete="name" placeholder="Nom complet" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
+                      </div>
+                      <div>
+                        <label className="sr-only" htmlFor="reservation-phone">Téléphone</label>
+                        <input id="reservation-phone" name="phone" required type="tel" autoComplete="tel" placeholder="Téléphone" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
+                      </div>
                     </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <input required type="date" className="bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors [color-scheme:dark]" />
-                      <input required type="time" className="bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors [color-scheme:dark]" />
-                      <select required className="bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors appearance-none">
-                        <option value="" disabled selected>Personnes</option>
-                        <option value="1" className="text-charcoal">1 personne</option>
-                        <option value="2" className="text-charcoal">2 personnes</option>
-                        <option value="3" className="text-charcoal">3 personnes</option>
-                        <option value="4" className="text-charcoal">4 personnes</option>
-                        <option value="5+" className="text-charcoal">5+ personnes</option>
-                      </select>
+                      <div>
+                        <label className="sr-only" htmlFor="reservation-date">Date</label>
+                        <input id="reservation-date" name="date" required type="date" className="w-full bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors [color-scheme:dark]" />
+                      </div>
+                      <div>
+                        <label className="sr-only" htmlFor="reservation-time">Heure</label>
+                        <input id="reservation-time" name="time" required type="time" className="w-full bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors [color-scheme:dark]" />
+                      </div>
+                      <div>
+                        <label className="sr-only" htmlFor="reservation-guests">Personnes</label>
+                        <select id="reservation-guests" name="guests" required defaultValue="" className="w-full bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors appearance-none">
+                          <option value="" disabled>Personnes</option>
+                          <option value="1" className="text-charcoal">1 personne</option>
+                          <option value="2" className="text-charcoal">2 personnes</option>
+                          <option value="3" className="text-charcoal">3 personnes</option>
+                          <option value="4" className="text-charcoal">4 personnes</option>
+                          <option value="5+" className="text-charcoal">5+ personnes</option>
+                        </select>
+                      </div>
                     </div>
-                    <textarea placeholder="Message ou demande spéciale (optionnel)" rows={3} className="bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors resize-none mt-4" />
-                    
-                    <button 
-                      type="submit" 
+
+                    <div>
+                      <label className="sr-only" htmlFor="reservation-message">Message ou demande spéciale</label>
+                      <textarea id="reservation-message" name="message" placeholder="Message ou demande spéciale (optionnel)" rows={3} className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors resize-none mt-4" />
+                    </div>
+
+                    {status === "error" && (
+                      <p className="text-sm text-terracotta" role="alert">
+                        La demande n&apos;a pas pu être envoyée. Veuillez réessayer dans un instant.
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
                       disabled={status === "submitting"}
-                      className="mt-6 bg-terracotta text-white py-4 uppercase tracking-widest text-sm font-semibold hover:bg-brass hover:text-charcoal transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="mt-6 bg-terracotta text-white py-4 uppercase tracking-widest text-sm font-semibold hover:bg-brass hover:text-charcoal transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
                     >
                       {status === "submitting" ? "Envoi en cours..." : "Confirmer la demande"}
                     </button>
                   </form>
                 )}
 
-                {/* Form Background Pattern */}
                 <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-margoum-pattern opacity-[0.03] mix-blend-overlay rounded-full blur-xl pointer-events-none" />
               </div>
             </Reveal>
-
           </div>
 
-          {/* Right Column: Embedded Map */}
           <Reveal delay={0.3}>
             <div className="w-full h-[500px] lg:h-full min-h-[500px] relative p-2 md:p-4 border border-brass/20 bg-charcoal">
-              {/* Margoum stylized corners */}
               <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-brass" />
               <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-brass" />
               <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-brass" />
               <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-brass" />
-              
+
               <div className="w-full h-full relative overflow-hidden bg-deep-blue/50 filter sepia-[0.2] contrast-125 saturate-50 transition-all duration-700 hover:sepia-0 hover:saturate-100">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3191.0716618458737!2d10.323565!3d36.88856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12e2b4b4b4b4b4b4%3A0x4b4b4b4b4b4b4b4b!2sLa%20Marsa%2C%20Tunisia!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s" 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen={false} 
-                  loading="lazy" 
+                <iframe
+                  src={mapSrc}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={false}
+                  loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Google Maps La Marsa"
+                  title="Carte de Coin Margoum à La Marsa"
                   className="absolute inset-0 w-full h-full"
-                ></iframe>
+                />
               </div>
             </div>
           </Reveal>
-
         </div>
       </div>
     </section>

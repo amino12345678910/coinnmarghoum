@@ -39,8 +39,8 @@ const galleryItems: GalleryItem[] = [
   {
     id: "tea",
     type: "image",
-    src: "https://images.unsplash.com/photo-1576092762791-dd9e2220afa1?auto=format&fit=crop&q=80",
-    caption: "Le Thé à la Menthe",
+    src: "/images/dish_ojja.png",
+    caption: "Ojja Merguez",
     span: "col-span-1 row-span-2",
   },
   {
@@ -75,7 +75,7 @@ export default function Gallery() {
   }, [activeIndex]);
 
   return (
-    <section className="bg-charcoal py-24 md:py-32 w-full">
+    <section id="galerie" className="bg-charcoal py-24 md:py-32 w-full">
       <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
         <Reveal>
           <div className="flex flex-col items-center text-center mb-16">
@@ -91,15 +91,18 @@ export default function Gallery() {
         {/* Masonry/Justified Grid */}
         <div className="group grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px]">
           {galleryItems.map((item, index) => (
-            <div
+            <button
+              type="button"
               key={item.id}
               onClick={() => setActiveIndex(index)}
-              className={`relative overflow-hidden rounded-sm cursor-pointer transition-all duration-700 
+              aria-label={`Ouvrir ${item.caption}`}
+              className={`relative block h-full w-full overflow-hidden rounded-sm cursor-pointer text-left transition-all duration-700 
                 bg-deep-blue
                 ${item.span || "col-span-1 row-span-1"}
                 /* Sibling hover effect */
                 group-hover:grayscale-[0.6] group-hover:opacity-60
                 hover:!grayscale-0 hover:!opacity-100 hover:z-10 hover:shadow-2xl hover:scale-[1.02]
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal
               `}
             >
               {item.type === "image" ? (
@@ -132,7 +135,7 @@ export default function Gallery() {
                   {item.caption}
                 </span>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -146,10 +149,14 @@ export default function Gallery() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/95 backdrop-blur-md p-4 md:p-12"
             onClick={() => setActiveIndex(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Galerie Coin Margoum"
           >
             <button 
               className="absolute top-6 right-6 md:top-10 md:right-10 text-cream hover:text-terracotta transition-colors z-50"
               onClick={(e) => { e.stopPropagation(); setActiveIndex(null); }}
+              aria-label="Fermer la galerie"
             >
               <X size={36} />
             </button>
@@ -160,6 +167,7 @@ export default function Gallery() {
                 e.stopPropagation();
                 setActiveIndex((prev) => (prev! - 1 + galleryItems.length) % galleryItems.length);
               }}
+              aria-label="Image précédente"
             >
               <ChevronLeft size={48} />
             </button>
@@ -170,6 +178,7 @@ export default function Gallery() {
                 e.stopPropagation();
                 setActiveIndex((prev) => (prev! + 1) % galleryItems.length);
               }}
+              aria-label="Image suivante"
             >
               <ChevronRight size={48} />
             </button>

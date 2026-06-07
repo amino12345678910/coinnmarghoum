@@ -8,6 +8,7 @@ import Preloader from "@/components/layout/Preloader";
 import Footer from "@/components/sections/Footer";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
 import FoodConcierge from "@/components/ui/FoodConcierge";
+import { siteConfig } from "@/config/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap" });
@@ -20,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://coinmargoum.com"), // Placeholder URL
+  metadataBase: new URL(siteConfig.siteUrl),
   title: {
     default: "Coin Margoum | Restaurant Tunisien Authentique à La Marsa",
     template: "%s | Coin Margoum",
@@ -30,13 +31,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Coin Margoum | Restaurant Tunisien à La Marsa",
     description: "Une expérience culinaire authentique au cœur de La Marsa. Où la saveur tunisienne se tisse.",
-    url: "https://coinmargoum.com",
+    url: siteConfig.siteUrl,
     siteName: "Coin Margoum",
     locale: "fr_TN",
     type: "website",
     images: [
       {
-        url: "/images/og-image.jpg",
+        url: "/images/hero_interior.png",
         width: 1200,
         height: 630,
         alt: "Coin Margoum - Restaurant Tunisien La Marsa",
@@ -47,10 +48,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Coin Margoum | Restaurant Tunisien",
     description: "Le meilleur de la cuisine tunisienne à La Marsa.",
-    images: ["/images/og-image.jpg"],
+    images: ["/images/hero_interior.png"],
   },
   alternates: {
-    canonical: "https://coinmargoum.com",
+    canonical: siteConfig.siteUrl,
   },
   robots: {
     index: true,
@@ -65,55 +66,51 @@ export const metadata: Metadata = {
   },
 };
 
+const socialLinks = Object.values(siteConfig.socials).filter(Boolean);
+
+const restaurantJsonLd = {
+  "@type": "Restaurant",
+  "@id": `${siteConfig.siteUrl}/#restaurant`,
+  "name": siteConfig.name,
+  "image": `${siteConfig.siteUrl}/images/hero_interior.png`,
+  "url": siteConfig.siteUrl,
+  "menu": `${siteConfig.siteUrl}/#menu`,
+  "servesCuisine": "Tunisian",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": siteConfig.address.street,
+    "addressLocality": siteConfig.address.city,
+    "postalCode": siteConfig.address.postalCode,
+    "addressCountry": siteConfig.address.countryCode
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": siteConfig.address.latitude,
+    "longitude": siteConfig.address.longitude
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+      "opens": "12:00",
+      "closes": "23:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Friday", "Saturday", "Sunday"],
+      "opens": "12:00",
+      "closes": "00:00"
+    }
+  ],
+  ...(siteConfig.phoneE164 ? { "telephone": siteConfig.phoneE164 } : {}),
+  ...(socialLinks.length ? { "sameAs": socialLinks } : {}),
+};
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "Restaurant",
-      "@id": "https://coinmargoum.com/#restaurant",
-      "name": "Coin Margoum",
-      "image": "https://coinmargoum.com/images/og-image.jpg",
-      "url": "https://coinmargoum.com",
-      "telephone": "+21600000000",
-      "menu": "https://coinmargoum.com/#menu",
-      "servesCuisine": "Tunisian",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "12 Rue Sidi Abdelaziz",
-        "addressLocality": "La Marsa",
-        "postalCode": "2070",
-        "addressCountry": "TN"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 36.88856,
-        "longitude": 10.323565
-      },
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"],
-          "opens": "12:00",
-          "closes": "23:00"
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Friday", "Saturday", "Sunday"],
-          "opens": "12:00",
-          "closes": "00:00"
-        }
-      ],
-      "sameAs": [
-        "https://instagram.com/coinmargoum",
-        "https://facebook.com/coinmargoum"
-      ],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "reviewCount": "124"
-      }
-    },
+    restaurantJsonLd,
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
@@ -121,7 +118,7 @@ const jsonLd = {
           "@type": "ListItem",
           "position": 1,
           "name": "Accueil",
-          "item": "https://coinmargoum.com/"
+          "item": `${siteConfig.siteUrl}/`
         }
       ]
     }

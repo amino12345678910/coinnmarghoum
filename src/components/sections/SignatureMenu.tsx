@@ -1,46 +1,40 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import Reveal from "@/components/ui/Reveal";
 import { signatureDishes, Dish } from "@/data/dishes";
 
 function DishCard({ dish }: { dish: Dish }) {
   return (
-    <div className="group relative rounded-xl overflow-hidden transition-all duration-700 hover:-translate-y-3 bg-charcoal shadow-2xl hover:shadow-[0_20px_40px_rgba(200,90,70,0.15)] cursor-pointer">
-      <div className="relative aspect-[3/4] overflow-hidden w-full">
-        {/* Soft film grade filter using Tailwind utilities */}
-        <Image 
-          src={dish.image} 
-          alt={dish.name} 
-          fill 
-          placeholder="blur"
-          className="object-cover transition-transform duration-1000 group-hover:scale-110 saturate-[1.1] contrast-[1.05] brightness-95 sepia-[0.15]"
-          sizes="(max-width: 1024px) 100vw, 400px"
+    <div className="group relative overflow-hidden rounded-xl bg-charcoal shadow-2xl transition-all duration-700 hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(200,90,70,0.15)]">
+      <div className="relative aspect-[3/4] w-full overflow-hidden">
+        <Image
+          src={dish.image}
+          alt={dish.name}
+          fill
+          className="object-cover brightness-95 contrast-[1.05] saturate-[1.1] sepia-[0.15] transition-transform duration-1000 group-hover:scale-110"
+          sizes="(max-width: 640px) 82vw, 420px"
         />
-        
-        {/* Margoum diamond pattern wash on hover */}
-        <div className="absolute inset-0 bg-margoum-pattern opacity-0 group-hover:opacity-30 transition-opacity duration-1000 mix-blend-overlay z-10 pointer-events-none" />
-        
-        {/* Dark gradient for text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a111a]/90 via-[#0a111a]/40 to-transparent z-10 pointer-events-none transition-opacity duration-500 group-hover:opacity-90" />
-        
-        <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 z-20 flex flex-col items-start text-white">
-          <div className="flex flex-wrap gap-2 mb-4">
-            {dish.tags.map(tag => (
-              <span key={tag} className="text-[9px] md:text-[10px] font-semibold uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-sm text-cream border border-white/20">
+
+        <div className="absolute inset-0 z-10 bg-margoum-pattern opacity-0 mix-blend-overlay transition-opacity duration-1000 group-hover:opacity-30" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0a111a]/90 via-[#0a111a]/40 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+
+        <div className="absolute bottom-0 left-0 z-20 flex w-full flex-col items-start p-6 text-white md:p-8">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {dish.tags.map((tag) => (
+              <span key={tag} className="rounded-sm border border-white/20 bg-white/10 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-widest text-cream backdrop-blur-md md:text-[10px]">
                 {tag}
               </span>
             ))}
           </div>
-          <h3 className="font-heading text-3xl md:text-4xl mb-3 group-hover:text-brass transition-colors duration-500 drop-shadow-md">
+          <h3 className="mb-3 font-heading text-3xl drop-shadow-md transition-colors duration-500 group-hover:text-brass md:text-4xl">
             {dish.name}
           </h3>
           <div className="overflow-hidden">
-            <p className="text-sm md:text-base text-cream/90 font-light leading-relaxed opacity-0 translate-y-8 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-out">
+            <p className="translate-y-8 text-sm font-light leading-relaxed text-cream/90 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 md:text-base">
               {dish.description}
             </p>
           </div>
@@ -51,88 +45,94 @@ function DishCard({ dish }: { dish: Dish }) {
 }
 
 export default function SignatureMenu() {
-  const containerRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // Use matchMedia to apply horizontal scroll only on desktop
-    const mm = gsap.matchMedia();
+  const updateScrollState = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
 
-    mm.add("(min-width: 1024px)", () => {
-      if (!containerRef.current || !trackRef.current) return;
-      
-      const trackWidth = trackRef.current.scrollWidth;
-      const viewportWidth = window.innerWidth;
-      
-      // Amount to scroll horizontally
-      const xOffset = trackWidth - viewportWidth + 100; 
-
-      gsap.to(trackRef.current, {
-        x: -xOffset,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          pin: true,
-          scrub: 1,
-          start: "top top",
-          end: () => "+=" + xOffset, // The pinning distance equals the scroll distance
-          invalidateOnRefresh: true,
-        }
-      });
-    });
-
-    return () => mm.revert();
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    setCanScrollLeft(track.scrollLeft > 8);
+    setCanScrollRight(track.scrollLeft < maxScroll - 8);
   }, []);
 
+  const scrollMenu = (direction: "left" | "right") => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const firstCard = track.querySelector<HTMLElement>("[data-dish-card]");
+    const cardWidth = firstCard?.offsetWidth || 420;
+    const gap = 40;
+
+    track.scrollBy({
+      left: direction === "right" ? cardWidth + gap : -(cardWidth + gap),
+      behavior: "smooth",
+    });
+
+    window.setTimeout(updateScrollState, 350);
+  };
+
+  useEffect(() => {
+    updateScrollState();
+    window.addEventListener("resize", updateScrollState);
+    return () => window.removeEventListener("resize", updateScrollState);
+  }, [updateScrollState]);
+
   return (
-    <section ref={containerRef} className="bg-deep-blue text-cream relative w-full overflow-hidden">
-      <div className="py-24 md:py-32 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-12 z-10 relative">
+    <section id="signature" className="relative w-full overflow-hidden bg-deep-blue text-cream">
+      <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-start justify-between gap-10 px-6 py-24 md:px-12 md:py-32 lg:flex-row lg:items-end lg:px-24">
         <Reveal>
           <div>
-            <span className="text-xs font-semibold tracking-[0.2em] text-terracotta uppercase mb-4 block">
+            <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
               LE CHOIX DU CHEF
             </span>
-            <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-cream leading-none tracking-tight">
+            <h2 className="font-heading text-5xl leading-none tracking-tight text-cream md:text-6xl lg:text-7xl">
               Nos Plats Signature
             </h2>
           </div>
         </Reveal>
 
         <Reveal delay={0.2}>
-          <a href="/menu" className="group relative inline-flex items-center text-brass font-semibold uppercase tracking-widest text-xs md:text-sm hover:text-white transition-colors duration-300 pb-2">
-            Voir le menu complet
-            <svg className="absolute bottom-0 left-0 w-full h-1 overflow-visible" viewBox="0 0 100 12" preserveAspectRatio="none">
-              <path
-                d="M0,6 Q12,12 25,6 T50,6 T75,6 T100,6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeDasharray="100"
-                className="[stroke-dashoffset:100] group-hover:[stroke-dashoffset:0] transition-all duration-500 ease-out"
-                strokeLinecap="round"
-              />
-            </svg>
-          </a>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => scrollMenu("left")}
+              disabled={!canScrollLeft}
+              aria-label="Plat précédent"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-brass/40 text-brass transition-colors hover:border-brass hover:bg-brass hover:text-charcoal disabled:pointer-events-none disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollMenu("right")}
+              disabled={!canScrollRight}
+              aria-label="Plat suivant"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-brass/40 text-brass transition-colors hover:border-brass hover:bg-brass hover:text-charcoal disabled:pointer-events-none disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
+            >
+              <ChevronRight size={22} />
+            </button>
+          </div>
         </Reveal>
       </div>
 
-      <div className="w-full overflow-hidden pb-32">
-        <div 
-          ref={trackRef} 
-          className="flex flex-col lg:flex-row gap-8 lg:gap-16 px-6 md:px-12 lg:px-24 w-full lg:w-max items-center lg:items-start"
+      <div className="w-full pb-24 md:pb-32">
+        <div
+          ref={trackRef}
+          onScroll={updateScrollState}
+          className="no-visible-scrollbar flex snap-x snap-mandatory gap-8 overflow-x-auto px-6 pb-8 md:px-12 lg:gap-10 lg:px-24"
         >
           {signatureDishes.map((dish) => (
-             <div 
-               key={dish.id} 
-               className="w-full max-w-md lg:w-[420px] flex-shrink-0 transition-transform duration-500"
-             >
-               <DishCard dish={dish} />
-             </div>
+            <div
+              key={dish.id}
+              data-dish-card
+              className="w-[82vw] max-w-md flex-none snap-start transition-transform duration-500 sm:w-[420px]"
+            >
+              <DishCard dish={dish} />
+            </div>
           ))}
-          {/* Spacer for horizontal scroll end */}
-          <div className="hidden lg:block w-[10vw] flex-shrink-0" />
         </div>
       </div>
     </section>

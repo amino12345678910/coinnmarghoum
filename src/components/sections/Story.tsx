@@ -6,9 +6,6 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 
-import aboutMargoumImg from "../../../public/images/about_margoum.png";
-import dishCouscousImg from "../../../public/images/dish_couscous.png";
-
 export default function Story() {
   const containerRef = useRef<HTMLElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -61,7 +58,7 @@ export default function Story() {
   }, []);
 
   return (
-    <section ref={containerRef} className="relative w-full bg-cream py-24 md:py-32 overflow-hidden">
+    <section id="histoire" ref={containerRef} className="relative w-full bg-cream py-24 md:py-32 overflow-hidden">
       {/* Horizontal Thread Line */}
       <div className="absolute top-16 left-0 w-full pointer-events-none opacity-30 px-4 md:px-0">
         <svg className="w-full h-3 md:h-4" preserveAspectRatio="none">
@@ -83,12 +80,11 @@ export default function Story() {
           <div className="relative aspect-[4/5] md:aspect-[3/4] w-full max-w-md mx-auto lg:mx-0 overflow-hidden rounded-sm shadow-xl" ref={imageContainerRef}>
             <div className="absolute inset-0 z-0">
               <Image 
-                src={aboutMargoumImg} 
+                src="/images/about_margoum.png" 
                 alt="Détail de tissage Margoum" 
                 fill 
                 className="object-cover saturate-50 contrast-125"
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                placeholder="blur"
               />
             </div>
             {/* The second image starts fully clipped from the top */}
@@ -98,12 +94,11 @@ export default function Story() {
               style={{ clipPath: "inset(100% 0% 0% 0%)" }}
             >
               <Image 
-                src={dishCouscousImg} 
+                src="/images/dish_couscous.png" 
                 alt="Couscous Royal Coin Margoum" 
                 fill 
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                placeholder="blur"
               />
             </div>
             {/* Subtle Margoum pattern overlay */}

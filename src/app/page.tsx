@@ -1,6 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import Story from "@/components/sections/Story";
 import SignatureMenu from "@/components/sections/SignatureMenu";
+import FullMenu from "@/components/sections/FullMenu";
 import Gallery from "@/components/sections/Gallery";
 import Reviews from "@/components/sections/Reviews";
 import Contact from "@/components/sections/Contact";
@@ -13,6 +14,7 @@ export default function Home() {
       <Story />
       <InteractiveDivider />
       <SignatureMenu />
+      <FullMenu />
       <Gallery />
       <Reviews />
       <Contact />
