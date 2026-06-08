@@ -128,12 +128,3 @@ html {
     scroll-padding-right: 6rem;
   }
 }
-
-@media (min-width: 1280px) {
-  .signature-track {
-    padding-left: calc((100vw - 1280px) / 2 + 6rem) !important;
-    scroll-padding-left: calc((100vw - 1280px) / 2 + 6rem) !important;
-    padding-right: calc((100vw - 1280px) / 2 + 6rem) !important;
-    scroll-padding-right: calc((100vw - 1280px) / 2 + 6rem) !important;
-  }
-}
