@@ -108,3 +108,32 @@ html {
     text-wrap: balance;
   }
 }
+
+/* Signature dishes slider padding & snapping alignments */
+.signature-track {
+  scroll-padding-left: 1.5rem;
+  scroll-padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .signature-track {
+    scroll-padding-left: 3rem;
+    scroll-padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .signature-track {
+    scroll-padding-left: 6rem;
+    scroll-padding-right: 6rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .signature-track {
+    padding-left: calc((100vw - 1280px) / 2 + 6rem) !important;
+    scroll-padding-left: calc((100vw - 1280px) / 2 + 6rem) !important;
+    padding-right: calc((100vw - 1280px) / 2 + 6rem) !important;
+    scroll-padding-right: calc((100vw - 1280px) / 2 + 6rem) !important;
+  }
+}
