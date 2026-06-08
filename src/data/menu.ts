@@ -6,6 +6,9 @@ export type MenuItem = {
   price: number;
   notes: { fr: string[]; en: string[] };
   signature?: boolean;
+  image: string;
+  spicy?: boolean;
+  vegetarian?: boolean;
 };
 
 export type MenuCategory = {
@@ -38,6 +41,9 @@ export const menuCategories: MenuCategory[] = [
           en: ["Crispy", "Classic"]
         },
         signature: true,
+        image: "/images/dish_brik.png",
+        vegetarian: false,
+        spicy: false,
       },
       {
         name: { fr: "Mechouia fumée", en: "Smoked Mechouia" },
@@ -50,6 +56,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Fumé", "Végétarien"],
           en: ["Smoky", "Vegetarian"]
         },
+        image: "/images/dish_kemia.png",
+        vegetarian: true,
+        spicy: true,
       },
       {
         name: { fr: "Slata Tounsia", en: "Tunisian Salad" },
@@ -62,6 +71,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Frais", "Léger"],
           en: ["Fresh", "Light"]
         },
+        image: "/images/dish_kemia.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Assiette Kemia", en: "Kemia Platter" },
@@ -74,6 +86,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["À partager", "Maison"],
           en: ["To share", "Homemade"]
         },
+        image: "/images/dish_kemia.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Doigts de Fatma", en: "Fatima's Fingers" },
@@ -86,6 +101,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Doré", "Gourmand"],
           en: ["Golden", "Savory"]
         },
+        image: "/images/dish_brik.png",
+        vegetarian: false,
+        spicy: false,
       },
     ],
   },
@@ -110,6 +128,9 @@ export const menuCategories: MenuCategory[] = [
           en: ["Generous", "Signature"]
         },
         signature: true,
+        image: "/images/dish_couscous.png",
+        vegetarian: false,
+        spicy: false,
       },
       {
         name: { fr: "Ojja Merguez", en: "Merguez Ojja" },
@@ -122,6 +143,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Piquant", "Réconfortant"],
           en: ["Spicy", "Comforting"]
         },
+        image: "/images/dish_ojja.png",
+        vegetarian: false,
+        spicy: true,
       },
       {
         name: { fr: "Riz Djerbien", en: "Djerbian Rice" },
@@ -134,6 +158,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Parfumé", "Sud tunisien"],
           en: ["Fragrant", "Southern Specialty"]
         },
+        image: "/images/dish_riz_djerbien.png",
+        vegetarian: false,
+        spicy: false,
       },
       {
         name: { fr: "Mosli d'agneau", en: "Lamb Mosli" },
@@ -147,6 +174,9 @@ export const menuCategories: MenuCategory[] = [
           en: ["Slow-cooked", "Melts in Mouth"]
         },
         signature: true,
+        image: "/images/dish_couscous.png",
+        vegetarian: false,
+        spicy: false,
       },
       {
         name: { fr: "Poisson du jour", en: "Catch of the Day" },
@@ -159,6 +189,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Frais", "Grillé"],
           en: ["Fresh", "Grilled"]
         },
+        image: "/images/dish_riz_djerbien.png",
+        vegetarian: false,
+        spicy: false,
       },
       {
         name: { fr: "Mloukhia maison", en: "Homemade Mloukhia" },
@@ -171,6 +204,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Tradition", "Lent"],
           en: ["Traditional", "Slow-cooked"]
         },
+        image: "/images/dish_ojja.png",
+        vegetarian: false,
+        spicy: false,
       },
     ],
   },
@@ -194,6 +230,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Végétarien", "Doux"],
           en: ["Vegetarian", "Mild"]
         },
+        image: "/images/dish_couscous.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Tajine tunisien", en: "Tunisian Tajine" },
@@ -206,6 +245,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Moelleux", "À partager"],
           en: ["Moist", "To share"]
         },
+        image: "/images/dish_brik.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Kafteji maison", en: "Homemade Kafteji" },
@@ -218,6 +260,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Gourmand", "Populaire"],
           en: ["Hearty", "Local Favorite"]
         },
+        image: "/images/dish_ojja.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Lablabi soigné", en: "Classic Lablabi" },
@@ -230,6 +275,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Chaud", "Populaire"],
           en: ["Warm", "Popular Street Food"]
         },
+        image: "/images/dish_ojja.png",
+        vegetarian: true,
+        spicy: true,
       },
     ],
   },
@@ -253,6 +301,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Miel", "Fruits secs"],
           en: ["Honey", "Nuts"]
         },
+        image: "/images/dish_pastry.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Crème fleur d'oranger", en: "Orange Blossom Cream" },
@@ -265,6 +316,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Frais", "Délicat"],
           en: ["Fresh", "Delicate"]
         },
+        image: "/images/dish_pastry.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Dattes farcies", en: "Stuffed Dates" },
@@ -277,6 +331,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Tradition", "À partager"],
           en: ["Traditional", "To share"]
         },
+        image: "/images/dish_pastry.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Bambalouni minute", en: "Fresh Bambalouni" },
@@ -289,6 +346,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Chaud", "Gourmand"],
           en: ["Hot", "Sweet Indulgence"]
         },
+        image: "/images/dish_pastry.png",
+        vegetarian: true,
+        spicy: false,
       },
     ],
   },
@@ -313,6 +373,9 @@ export const menuCategories: MenuCategory[] = [
           en: ["Hot", "Classic"]
         },
         signature: true,
+        image: "/images/dish_tea.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Citronnade maison", en: "Homemade Lemonade" },
@@ -325,6 +388,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Frais", "Maison"],
           en: ["Fresh", "Homemade"]
         },
+        image: "/images/dish_tea.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Café turc", en: "Turkish Coffee" },
@@ -337,6 +403,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Intense", "Après repas"],
           en: ["Intense", "After Meal"]
         },
+        image: "/images/dish_tea.png",
+        vegetarian: true,
+        spicy: false,
       },
       {
         name: { fr: "Boga lim", en: "Boga Lim" },
@@ -349,6 +418,9 @@ export const menuCategories: MenuCategory[] = [
           fr: ["Frais", "Local"],
           en: ["Chilled", "Local Beverage"]
         },
+        image: "/images/dish_tea.png",
+        vegetarian: true,
+        spicy: false,
       },
     ],
   },
