@@ -6,14 +6,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import Reveal from "@/components/ui/Reveal";
 import { signatureDishes, Dish } from "@/data/dishes";
+import { useLanguage } from "@/context/LanguageContext";
 
 function DishCard({ dish }: { dish: Dish }) {
+  const { locale } = useLanguage();
   return (
     <div className="group relative overflow-hidden rounded-xl bg-charcoal shadow-2xl transition-all duration-700 hover:-translate-y-3 hover:shadow-[0_20px_40px_rgba(200,90,70,0.15)]">
       <div className="relative aspect-[3/4] w-full overflow-hidden">
         <Image
           src={dish.image}
-          alt={dish.name}
+          alt={dish.name[locale]}
           fill
           className="object-cover brightness-95 contrast-[1.05] saturate-[1.1] sepia-[0.15] transition-transform duration-1000 group-hover:scale-110"
           sizes="(max-width: 640px) 82vw, 420px"
@@ -24,18 +26,18 @@ function DishCard({ dish }: { dish: Dish }) {
 
         <div className="absolute bottom-0 left-0 z-20 flex w-full flex-col items-start p-6 text-white md:p-8">
           <div className="mb-4 flex flex-wrap gap-2">
-            {dish.tags.map((tag) => (
+            {dish.tags[locale].map((tag) => (
               <span key={tag} className="rounded-sm border border-white/20 bg-white/10 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-widest text-cream backdrop-blur-md md:text-[10px]">
                 {tag}
               </span>
             ))}
           </div>
           <h3 className="mb-3 font-heading text-3xl drop-shadow-md transition-colors duration-500 group-hover:text-brass md:text-4xl">
-            {dish.name}
+            {dish.name[locale]}
           </h3>
           <div className="overflow-hidden">
             <p className="translate-y-8 text-sm font-light leading-relaxed text-cream/90 opacity-0 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 md:text-base">
-              {dish.description}
+              {dish.description[locale]}
             </p>
           </div>
         </div>
@@ -45,6 +47,7 @@ function DishCard({ dish }: { dish: Dish }) {
 }
 
 export default function SignatureMenu() {
+  const { t } = useLanguage();
   const trackRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -87,10 +90,10 @@ export default function SignatureMenu() {
         <Reveal>
           <div>
             <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-              LE CHOIX DU CHEF
+              {t("signature.eyebrow")}
             </span>
             <h2 className="font-heading text-5xl leading-none tracking-tight text-cream md:text-6xl lg:text-7xl">
-              Nos Plats Signature
+              {t("signature.title")}
             </h2>
           </div>
         </Reveal>
@@ -101,7 +104,7 @@ export default function SignatureMenu() {
               type="button"
               onClick={() => scrollMenu("left")}
               disabled={!canScrollLeft}
-              aria-label="Plat précédent"
+              aria-label={t("signature.prevAria")}
               className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-brass/40 text-brass transition-colors hover:border-brass hover:bg-brass hover:text-charcoal disabled:pointer-events-none disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
             >
               <ChevronLeft size={22} />
@@ -110,7 +113,7 @@ export default function SignatureMenu() {
               type="button"
               onClick={() => scrollMenu("right")}
               disabled={!canScrollRight}
-              aria-label="Plat suivant"
+              aria-label={t("signature.nextAria")}
               className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-brass/40 text-brass transition-colors hover:border-brass hover:bg-brass hover:text-charcoal disabled:pointer-events-none disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
             >
               <ChevronRight size={22} />

@@ -10,6 +10,7 @@ import Footer from "@/components/sections/Footer";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
 import FoodConcierge from "@/components/ui/FoodConcierge";
 import { siteConfig } from "@/config/site";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap" });
@@ -149,16 +150,18 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Preloader />
-        <PremiumNavigation />
-        <Noise />
-        <Cursor />
-        <LenisProvider>
-          {children}
-          <Footer />
-          <FloatingWhatsApp />
-          <FoodConcierge />
-        </LenisProvider>
+        <LanguageProvider>
+          <Preloader />
+          <PremiumNavigation />
+          <Noise />
+          <Cursor />
+          <LenisProvider>
+            {children}
+            <Footer />
+            <FloatingWhatsApp />
+            <FoodConcierge />
+          </LenisProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

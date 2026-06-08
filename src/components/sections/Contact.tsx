@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Reveal from "@/components/ui/Reveal";
 import { getPhoneHref, getSocialLinks, getWhatsAppUrl } from "@/config/site";
+import { useLanguage } from "@/context/LanguageContext";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
@@ -16,6 +17,7 @@ function encodeFormData(formData: FormData) {
 }
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const phoneHref = getPhoneHref();
   const whatsappUrl = getWhatsAppUrl();
@@ -50,10 +52,10 @@ export default function Contact() {
         <Reveal>
           <div className="text-center md:text-left mb-16">
             <span className="text-xs font-semibold tracking-[0.2em] text-brass uppercase mb-4 block">
-              NOUS TROUVER
+              {t("contact.eyebrow")}
             </span>
             <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl text-cream leading-tight">
-              Contact & Réservation
+              {t("contact.title")}
             </h2>
           </div>
         </Reveal>
@@ -63,18 +65,18 @@ export default function Contact() {
             <Reveal delay={0.1}>
               <div className="flex flex-col gap-6">
                 <div>
-                  <h3 className="font-heading text-2xl text-brass mb-3">Adresse</h3>
+                  <h3 className="font-heading text-2xl text-brass mb-3">{t("contact.address")}</h3>
                   <p className="text-cream/80 font-light text-lg">12 Rue Sidi Abdelaziz<br/>La Marsa, 2070, Tunisie</p>
                 </div>
 
                 <div>
-                  <h3 className="font-heading text-2xl text-brass mb-3">Horaires</h3>
+                  <h3 className="font-heading text-2xl text-brass mb-3">{t("contact.hours")}</h3>
                   <ul className="text-cream/80 font-light text-lg flex flex-col gap-2 relative pl-4 border-l border-brass/30">
                     <li className="relative before:content-[''] before:absolute before:-left-[21px] before:top-2 before:w-2 before:h-2 before:bg-brass before:rotate-45">
-                      Lun - Jeu : 12h00 - 23h00
+                      {t("contact.weekdayHours")}
                     </li>
                     <li className="relative before:content-[''] before:absolute before:-left-[21px] before:top-2 before:w-2 before:h-2 before:bg-brass before:rotate-45">
-                      Ven - Dim : 12h00 - 00h00
+                      {t("contact.weekendHours")}
                     </li>
                   </ul>
                 </div>
@@ -88,7 +90,7 @@ export default function Contact() {
                     )}
                     {phoneHref && (
                       <a href={phoneHref} className="px-6 py-3 border border-cream text-cream hover:bg-white hover:text-charcoal transition-colors uppercase tracking-widest text-xs font-semibold">
-                        Appeler
+                        {t("contact.btnCall")}
                       </a>
                     )}
                   </div>
@@ -115,16 +117,16 @@ export default function Contact() {
 
             <Reveal delay={0.2}>
               <div className="bg-charcoal p-8 md:p-10 border border-white/5 rounded-sm relative overflow-hidden">
-                <h3 className="font-heading text-3xl text-white mb-8">Réserver une table</h3>
+                <h3 className="font-heading text-3xl text-white mb-8">{t("contact.form.title")}</h3>
 
                 {status === "success" ? (
                   <div className="h-[300px] flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-700" aria-live="polite">
                     <div className="w-16 h-16 mb-6 flex items-center justify-center border-2 border-brass rounded-full rotate-45">
                       <div className="w-8 h-8 bg-brass -rotate-45" />
                     </div>
-                    <h4 className="font-heading text-2xl text-brass mb-2">Demande envoyée</h4>
+                    <h4 className="font-heading text-2xl text-brass mb-2">{t("contact.form.successTitle")}</h4>
                     <p className="text-cream/70 font-light">
-                      Notre équipe vous contactera très vite pour confirmer votre réservation.
+                      {t("contact.form.successDesc")}
                     </p>
                   </div>
                 ) : (
@@ -139,52 +141,52 @@ export default function Contact() {
                     <input type="hidden" name="form-name" value="reservation" />
                     <p className="hidden">
                       <label>
-                        Ne pas remplir ce champ
+                        {t("contact.form.botField")}
                         <input name="bot-field" tabIndex={-1} autoComplete="off" />
                       </label>
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="sr-only" htmlFor="reservation-name">Nom complet</label>
-                        <input id="reservation-name" name="name" required type="text" autoComplete="name" placeholder="Nom complet" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
+                        <label className="sr-only" htmlFor="reservation-name">{t("contact.form.placeholderName")}</label>
+                        <input id="reservation-name" name="name" required type="text" autoComplete="name" placeholder={t("contact.form.placeholderName")} className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
                       </div>
                       <div>
-                        <label className="sr-only" htmlFor="reservation-phone">Téléphone</label>
-                        <input id="reservation-phone" name="phone" required type="tel" autoComplete="tel" placeholder="Téléphone" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
+                        <label className="sr-only" htmlFor="reservation-phone">{t("contact.form.placeholderPhone")}</label>
+                        <input id="reservation-phone" name="phone" required type="tel" autoComplete="tel" placeholder={t("contact.form.placeholderPhone")} className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors" />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
-                        <label className="sr-only" htmlFor="reservation-date">Date</label>
+                        <label className="sr-only" htmlFor="reservation-date">{t("contact.form.placeholderDate")}</label>
                         <input id="reservation-date" name="date" required type="date" className="w-full bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors [color-scheme:dark]" />
                       </div>
                       <div>
-                        <label className="sr-only" htmlFor="reservation-time">Heure</label>
+                        <label className="sr-only" htmlFor="reservation-time">{t("contact.form.placeholderTime")}</label>
                         <input id="reservation-time" name="time" required type="time" className="w-full bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors [color-scheme:dark]" />
                       </div>
                       <div>
-                        <label className="sr-only" htmlFor="reservation-guests">Personnes</label>
+                        <label className="sr-only" htmlFor="reservation-guests">{t("contact.form.placeholderGuests")}</label>
                         <select id="reservation-guests" name="guests" required defaultValue="" className="w-full bg-transparent border-b border-white/20 pb-2 text-white/80 focus:outline-none focus:border-brass transition-colors appearance-none">
-                          <option value="" disabled>Personnes</option>
-                          <option value="1" className="text-charcoal">1 personne</option>
-                          <option value="2" className="text-charcoal">2 personnes</option>
-                          <option value="3" className="text-charcoal">3 personnes</option>
-                          <option value="4" className="text-charcoal">4 personnes</option>
-                          <option value="5+" className="text-charcoal">5+ personnes</option>
+                          <option value="" disabled>{t("contact.form.placeholderGuests")}</option>
+                          <option value="1" className="text-charcoal">{t("contact.form.person1")}</option>
+                          <option value="2" className="text-charcoal">{t("contact.form.person2")}</option>
+                          <option value="3" className="text-charcoal">{t("contact.form.person3")}</option>
+                          <option value="4" className="text-charcoal">{t("contact.form.person4")}</option>
+                          <option value="5+" className="text-charcoal">{t("contact.form.person5Plus")}</option>
                         </select>
                       </div>
                     </div>
 
                     <div>
-                      <label className="sr-only" htmlFor="reservation-message">Message ou demande spéciale</label>
-                      <textarea id="reservation-message" name="message" placeholder="Message ou demande spéciale (optionnel)" rows={3} className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors resize-none mt-4" />
+                      <label className="sr-only" htmlFor="reservation-message">{t("contact.form.placeholderMessage")}</label>
+                      <textarea id="reservation-message" name="message" placeholder={t("contact.form.placeholderMessage")} rows={3} className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/40 focus:outline-none focus:border-brass transition-colors resize-none mt-4" />
                     </div>
 
                     {status === "error" && (
                       <p className="text-sm text-terracotta" role="alert">
-                        La demande n&apos;a pas pu être envoyée. Veuillez réessayer dans un instant.
+                        {t("contact.form.errorMsg")}
                       </p>
                     )}
 
@@ -193,7 +195,7 @@ export default function Contact() {
                       disabled={status === "submitting"}
                       className="mt-6 rounded-full border border-terracotta bg-terracotta py-4 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-xl shadow-terracotta/20 transition-all hover:-translate-y-0.5 hover:bg-brass hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
                     >
-                      {status === "submitting" ? "Envoi en cours..." : "Confirmer la demande"}
+                      {status === "submitting" ? t("contact.form.submitting") : t("contact.form.submitBtn")}
                     </button>
                   </form>
                 )}

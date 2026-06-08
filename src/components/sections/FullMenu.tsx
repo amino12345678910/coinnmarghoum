@@ -5,6 +5,7 @@ import { Coffee, Flame, Leaf, Sparkles, UtensilsCrossed, Wine } from "lucide-rea
 
 import Reveal from "@/components/ui/Reveal";
 import { menuCategories, type MenuCategoryId } from "@/data/menu";
+import { useLanguage } from "@/context/LanguageContext";
 
 const categoryIcons = {
   entrees: Sparkles,
@@ -15,6 +16,7 @@ const categoryIcons = {
 };
 
 export default function FullMenu() {
+  const { locale, t } = useLanguage();
   const [activeId, setActiveId] = useState<MenuCategoryId>("plats");
   const activeCategory = useMemo(
     () => menuCategories.find((category) => category.id === activeId) || menuCategories[0],
@@ -42,21 +44,20 @@ export default function FullMenu() {
             <div>
               <span className="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-terracotta">
                 <span className="h-px w-10 bg-terracotta/60" />
-                La carte tissee
+                {t("fullMenu.eyebrow")}
               </span>
               <h2 className="font-heading text-5xl leading-[0.95] text-deep-blue md:text-6xl xl:text-7xl">
-                <span className="block">Un menu qui se lit</span>
-                <span className="block">comme un Margoum</span>
+                <span className="block">{t("fullMenu.titlePart1")}</span>
+                <span className="block">{t("fullMenu.titlePart2")}</span>
               </h2>
             </div>
 
             <div className="border-l border-brass/30 pl-6 text-charcoal/70 lg:pl-8">
               <p className="text-base leading-relaxed md:text-lg">
-                Choisissez un fil, suivez les parfums. Chaque famille garde son rythme:
-                croustillant, vapeur, sauce lente, menthe fraiche.
+                {t("fullMenu.desc")}
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {["Harissa maitrisee", "A partager", "Cuisine tunisienne"].map((label) => (
+                {[t("fullMenu.tag1"), t("fullMenu.tag2"), t("fullMenu.tag3")].map((label) => (
                   <span key={label} className="border border-charcoal/10 bg-white/50 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-charcoal/60">
                     {label}
                   </span>
@@ -68,7 +69,7 @@ export default function FullMenu() {
 
         <Reveal delay={0.1}>
           <div className="mt-14 border-y border-charcoal/10 py-4">
-            <div role="tablist" aria-label="Categories du menu" className="menu-carousel flex gap-3 overflow-x-auto pb-3">
+            <div role="tablist" aria-label={t("fullMenu.categoriesLabel")} className="menu-carousel flex gap-3 overflow-x-auto pb-3">
               {menuCategories.map((category, index) => {
                 const Icon = categoryIcons[category.id];
                 const isActive = category.id === activeId;
@@ -91,7 +92,7 @@ export default function FullMenu() {
                       <span className={`mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] ${isActive ? "text-brass" : "text-terracotta"}`}>
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="font-heading text-2xl leading-none">{category.label}</span>
+                      <span className="font-heading text-2xl leading-none">{category.label[locale]}</span>
                     </span>
                     <Icon size={22} className={isActive ? "text-brass" : "text-charcoal/35 group-hover:text-brass"} />
                   </button>
@@ -109,10 +110,10 @@ export default function FullMenu() {
                 <div className="mb-10 flex items-start justify-between gap-6">
                   <div>
                     <span className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.24em] text-brass">
-                      {activeCategory.eyebrow}
+                      {activeCategory.eyebrow[locale]}
                     </span>
                     <h3 className="font-heading text-5xl leading-none text-cream md:text-6xl">
-                      {activeCategory.label}
+                      {activeCategory.label[locale]}
                     </h3>
                   </div>
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-brass/50 text-brass">
@@ -121,13 +122,13 @@ export default function FullMenu() {
                 </div>
 
                 <p className="max-w-md text-base leading-relaxed text-cream/70">
-                  {activeCategory.description}
+                  {activeCategory.description[locale]}
                 </p>
 
                 <div className="mt-8 grid grid-cols-2 gap-3">
                   <div className="border border-brass/25 bg-cream/5 p-4">
                     <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-brass/80">
-                      Prix moyen
+                      {t("fullMenu.avgPrice")}
                     </span>
                     <strong className="mt-2 block font-heading text-3xl text-cream">
                       {averagePrice} TND
@@ -135,10 +136,10 @@ export default function FullMenu() {
                   </div>
                   <div className="border border-brass/25 bg-cream/5 p-4">
                     <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-brass/80">
-                      Selection
+                      {t("fullMenu.selection")}
                     </span>
                     <strong className="mt-2 block font-heading text-3xl text-cream">
-                      {activeCategory.items.length} plats
+                      {activeCategory.items.length} {t("fullMenu.countSuffix")}
                     </strong>
                   </div>
                 </div>
@@ -153,7 +154,7 @@ export default function FullMenu() {
                   href="#contact"
                   className="mt-10 inline-flex items-center gap-3 rounded-full border border-brass px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-brass transition-colors hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-deep-blue"
                 >
-                  Reserver cette table
+                  {t("fullMenu.btnBookTable")}
                   <UtensilsCrossed size={16} />
                 </a>
               </div>
@@ -168,16 +169,16 @@ export default function FullMenu() {
               className="divide-y divide-charcoal/10 border-y border-charcoal/10"
             >
               {activeCategory.items.map((item) => (
-                <article key={item.name} className="group grid gap-5 py-7 transition-colors md:grid-cols-[1fr_auto] md:items-start">
+                <article key={item.name.fr} className="group grid gap-5 py-7 transition-colors md:grid-cols-[1fr_auto] md:items-start">
                   <div>
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-3">
                         <h4 className="font-heading text-3xl leading-none text-deep-blue md:text-4xl">
-                          {item.name}
+                          {item.name[locale]}
                         </h4>
                         {item.signature && (
                           <span className="border border-terracotta/30 bg-terracotta/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-terracotta">
-                            Maison
+                            {t("fullMenu.maisonBadge")}
                           </span>
                         )}
                       </div>
@@ -186,12 +187,12 @@ export default function FullMenu() {
                       </span>
                     </div>
                     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-charcoal/70 md:text-base">
-                      {item.description}
+                      {item.description[locale]}
                     </p>
                   </div>
 
                   <div className="flex flex-wrap gap-2 md:max-w-[230px] md:justify-end">
-                    {item.notes.map((note) => (
+                    {item.notes[locale].map((note) => (
                       <span key={note} className="bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-charcoal/55 shadow-sm shadow-charcoal/5">
                         {note}
                       </span>
@@ -207,21 +208,20 @@ export default function FullMenu() {
           <div className="mt-14 grid gap-6 border border-brass/30 bg-white/55 p-6 shadow-xl shadow-charcoal/5 md:grid-cols-[1fr_auto] md:items-center md:p-8">
             <div>
               <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-terracotta">
-                Experience premium
+                {t("fullMenu.degustation.eyebrow")}
               </span>
               <h3 className="mt-3 font-heading text-3xl leading-tight text-deep-blue md:text-4xl">
-                Menu degustation Margoum
+                {t("fullMenu.degustation.title")}
               </h3>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-charcoal/70 md:text-base">
-                Une selection de 5 moments: kemia, entree chaude, plat signature, douceur et the a la menthe.
-                Ideal pour decouvrir la maison sans hesiter devant la carte.
+                {t("fullMenu.degustation.desc")}
               </p>
             </div>
             <a
               href="#contact"
               className="inline-flex items-center justify-center gap-3 rounded-full bg-deep-blue px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-lg shadow-deep-blue/20 transition-all hover:-translate-y-0.5 hover:bg-terracotta focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
-              Demander le menu
+              {t("fullMenu.degustation.btn")}
               <UtensilsCrossed size={16} />
             </a>
           </div>

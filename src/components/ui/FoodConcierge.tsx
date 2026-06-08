@@ -3,21 +3,31 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CalendarCheck, Send, Sparkles, X } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
 };
 
-const SUGGESTIONS = [
-  "Que me recommandez-vous ?",
-  "Plats vegetariens ?",
-  "Combien coute un couscous ?",
-  "Reserver une table",
-];
-
-function localConciergeReply(text: string) {
+function localConciergeReply(text: string, locale: "fr" | "en") {
   const question = text.toLowerCase();
+
+  if (locale === "en") {
+    if (question.includes("veget") || question.includes("meat")) {
+      return "I recommend the vegetable couscous, homemade kafteji, or classic lablabi. They are warm, generous, and highly aromatic choices.";
+    }
+    if (question.includes("price") || question.includes("cost") || question.includes("how much")) {
+      return "Starters begin around 11 TND, signature dishes range from 29 to 46 TND, and the Royal Couscous is 42 TND.";
+    }
+    if (question.includes("book") || question.includes("reserv") || question.includes("table")) {
+      return "To book, please use the Contact & Reservation form. Enter the date, time, and number of guests, and our team will confirm shortly.";
+    }
+    if (question.includes("spic") || question.includes("hot") || question.includes("harissa")) {
+      return "Harissa is well-balanced: the Merguez Ojja is the spiciest, the Royal Couscous is hearty but balanced, and the Djerbian Rice is mostly fragrant.";
+    }
+    return "Marhaba! For a first visit, I recommend the Egg Brik, Royal Couscous, or Djerbian Rice, followed by a fresh mint tea. It is the best way to discover the house.";
+  }
 
   if (question.includes("veget") || question.includes("sans viande")) {
     return "Je vous conseille le couscous aux legumes, le kafteji maison ou le lablabi soigne. Ce sont des choix solaires, genereux et bien parfumes.";
@@ -39,6 +49,7 @@ function localConciergeReply(text: string) {
 }
 
 export default function FoodConcierge() {
+  const { locale, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -49,6 +60,28 @@ export default function FoodConcierge() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const suggestions = [
+    t("concierge.suggestion1"),
+    t("concierge.suggestion2"),
+    t("concierge.suggestion3"),
+    t("concierge.suggestion4"),
+  ];
+
+  // Dynamically update greeting on language change
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0].role === "assistant") {
+        return [
+          {
+            role: "assistant",
+            content: t("concierge.greeting"),
+          },
+        ];
+      }
+      return prev;
+    });
+  }, [locale, t]);
 
   useEffect(() => {
     if (isOpen) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -66,16 +99,16 @@ export default function FoodConcierge() {
       const res = await fetch("/.netlify/functions/concierge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, locale }),
       });
 
       if (!res.ok) throw new Error("Concierge request failed");
 
       const data = await res.json();
-      const reply = typeof data.reply === "string" ? data.reply : localConciergeReply(text);
+      const reply = typeof data.reply === "string" ? data.reply : localConciergeReply(text, locale);
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: localConciergeReply(text) }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: localConciergeReply(text, locale) }]);
     } finally {
       setIsTyping(false);
     }
@@ -109,13 +142,13 @@ export default function FoodConcierge() {
                 </div>
                 <div>
                   <h3 className="font-heading text-lg leading-tight">Margoum</h3>
-                  <p className="text-[10px] uppercase tracking-wider text-brass">Hote virtuel</p>
+                  <p className="text-[10px] uppercase tracking-wider text-brass">{t("concierge.roleLabel")}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
                 className="relative z-10 text-cream/60 transition-colors hover:text-terracotta"
-                aria-label="Fermer le concierge virtuel"
+                aria-label={t("gallery.closeAria")}
               >
                 <X size={24} />
               </button>
@@ -123,7 +156,7 @@ export default function FoodConcierge() {
 
             <div className="flex-1 overflow-y-auto bg-cream p-4">
               <div className="mb-4 rounded-lg border border-brass/20 bg-white/70 p-3 text-xs leading-relaxed text-charcoal/65">
-                <span className="font-semibold text-deep-blue">Conseil instantane.</span> Le concierge repond avec IA en production si la cle Netlify est configuree, sinon il garde une reponse locale utile.
+                <span className="font-semibold text-deep-blue">{t("concierge.infoTitle")}</span> {t("concierge.infoDesc")}
               </div>
 
               <div className="flex flex-col gap-4">
@@ -161,7 +194,7 @@ export default function FoodConcierge() {
 
             {messages.length === 1 && (
               <div className="flex shrink-0 flex-wrap gap-2 border-t border-charcoal/5 bg-cream/95 px-4 py-3 backdrop-blur-sm">
-                {SUGGESTIONS.map((suggestion) => (
+                {suggestions.map((suggestion) => (
                   <button
                     key={suggestion}
                     onClick={() => handleSend(suggestion)}
@@ -185,7 +218,7 @@ export default function FoodConcierge() {
                 href="#contact"
                 onClick={() => setIsOpen(false)}
                 className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-brass/40 text-brass transition-colors hover:bg-brass hover:text-charcoal"
-                aria-label="Aller a la reservation"
+                aria-label={t("concierge.reservationAria")}
               >
                 <CalendarCheck size={18} />
               </a>
@@ -193,15 +226,15 @@ export default function FoodConcierge() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Posez votre question..."
-                aria-label="Question pour le concierge virtuel"
+                placeholder={t("concierge.inputPlaceholder")}
+                aria-label={t("concierge.inputPlaceholder")}
                 className="min-w-0 flex-1 rounded-full border border-charcoal/10 bg-cream/40 px-4 py-3 text-sm text-charcoal transition-all placeholder:text-charcoal/40 focus:border-brass focus:outline-none focus:ring-1 focus:ring-brass"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isTyping}
                 className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-charcoal text-brass transition-colors hover:bg-brass hover:text-charcoal disabled:opacity-50 disabled:hover:bg-charcoal disabled:hover:text-brass"
-                aria-label="Envoyer la question"
+                aria-label={t("concierge.sendAria")}
               >
                 <Send size={18} className="ml-0.5" />
               </button>

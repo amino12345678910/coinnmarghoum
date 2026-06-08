@@ -3,21 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-
-const navLinks = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "Notre Histoire", href: "#histoire" },
-  { label: "Menu", href: "#menu" },
-  { label: "Ambiance", href: "#galerie" },
-  { label: "Réservation", href: "#contact" },
-  { label: "Contact", href: "#contact" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function PremiumNavigation() {
+  const { locale, setLocale, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const firstMobileLinkRef = useRef<HTMLAnchorElement>(null);
+
+  const navLinks = [
+    { label: t("nav.accueil"), href: "#accueil" },
+    { label: t("nav.histoire"), href: "#histoire" },
+    { label: t("nav.menu"), href: "#menu" },
+    { label: t("nav.ambiance"), href: "#galerie" },
+    { label: t("nav.reservation"), href: "#contact" },
+    { label: t("nav.contact"), href: "#contact" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 32);
@@ -81,7 +83,7 @@ export default function PremiumNavigation() {
               ? "rounded-full border-brass/15 bg-charcoal/78 text-cream shadow-xl shadow-charcoal/20 backdrop-blur-md"
               : "rounded-full border-cream/10 bg-charcoal/30 text-cream shadow-lg shadow-charcoal/10 backdrop-blur-sm"
           }`}
-          aria-label="Navigation principale"
+          aria-label={t("nav.openAria")}
         >
           <a
             href="#accueil"
@@ -108,20 +110,48 @@ export default function PremiumNavigation() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <a
               href="#contact"
               onClick={closeMenu}
               className="inline-flex items-center justify-center rounded-full border border-brass bg-brass px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-charcoal shadow-md shadow-brass/15 transition-all hover:-translate-y-0.5 hover:bg-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal md:px-5"
             >
-              Réserver
+              {t("nav.reserverBtn")}
             </a>
+
+            {/* Language Switcher Pill */}
+            <div className="flex items-center rounded-full border border-cream/10 bg-charcoal/40 p-[2px] text-[9px] font-bold uppercase tracking-[0.08em] text-cream/70 backdrop-blur-sm shadow-inner shadow-black/10">
+              <button
+                type="button"
+                onClick={() => setLocale("fr")}
+                className={`rounded-full px-2 py-1 transition-all duration-300 ${
+                  locale === "fr"
+                    ? "bg-brass text-charcoal shadow-sm font-bold"
+                    : "hover:text-cream text-cream/60"
+                }`}
+                aria-label="Changer la langue en Français"
+              >
+                FR
+              </button>
+              <button
+                type="button"
+                onClick={() => setLocale("en")}
+                className={`rounded-full px-2 py-1 transition-all duration-300 ${
+                  locale === "en"
+                    ? "bg-brass text-charcoal shadow-sm font-bold"
+                    : "hover:text-cream text-cream/60"
+                }`}
+                aria-label="Change language to English"
+              >
+                EN
+              </button>
+            </div>
 
             <button
               ref={menuButtonRef}
               type="button"
               onClick={() => setIsOpen((current) => !current)}
-              aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-label={isOpen ? t("nav.closeAria") : t("nav.openAria")}
               aria-expanded={isOpen}
               aria-controls="mobile-navigation"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/15 bg-cream/8 text-cream transition-colors hover:border-brass hover:text-brass focus:outline-none focus-visible:ring-2 focus-visible:ring-brass lg:hidden"
@@ -173,7 +203,7 @@ export default function PremiumNavigation() {
                 type="button"
                 onClick={closeMenu}
                 className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-cream/15 text-cream/70 transition-colors hover:border-brass hover:text-brass focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-                aria-label="Fermer le menu"
+                aria-label={t("nav.closeAria")}
               >
                 <X size={18} />
               </button>
@@ -183,7 +213,7 @@ export default function PremiumNavigation() {
                   Coin Margoum
                 </span>
                 <p className="max-w-xs text-sm leading-relaxed text-cream/58">
-                  Cuisine tunisienne, ambiance feutrée et réservation simple.
+                  {t("nav.reserverDesc")}
                 </p>
               </div>
 
@@ -204,12 +234,41 @@ export default function PremiumNavigation() {
                 ))}
               </div>
 
+              {/* Mobile Language Switcher */}
+              <div className="relative z-10 mt-auto mb-6 flex flex-col gap-3">
+                <span className="text-[10px] uppercase tracking-widest text-cream/40 text-center">{locale === "fr" ? "Langue" : "Language"}</span>
+                <div className="flex items-center justify-center rounded-full border border-cream/10 bg-charcoal/40 p-[2px] text-[10px] font-bold uppercase tracking-[0.08em] text-cream/70">
+                  <button
+                    type="button"
+                    onClick={() => setLocale("fr")}
+                    className={`w-1/2 rounded-full py-2 transition-all ${
+                      locale === "fr"
+                        ? "bg-brass text-charcoal font-bold"
+                        : "text-cream/60"
+                    }`}
+                  >
+                    Français
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLocale("en")}
+                    className={`w-1/2 rounded-full py-2 transition-all ${
+                      locale === "en"
+                        ? "bg-brass text-charcoal font-bold"
+                        : "text-cream/60"
+                    }`}
+                  >
+                    English
+                  </button>
+                </div>
+              </div>
+
               <a
                 href="#contact"
                 onClick={closeMenu}
-                className="relative z-10 mt-auto inline-flex items-center justify-center rounded-full border border-brass bg-brass px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-charcoal transition-all hover:bg-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+                className="relative z-10 inline-flex items-center justify-center rounded-full border border-brass bg-brass px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-charcoal transition-all hover:bg-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
               >
-                Réserver une table
+                {t("nav.reserverTitle")}
               </a>
             </motion.aside>
           </motion.div>

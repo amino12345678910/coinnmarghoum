@@ -3,8 +3,10 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -23,6 +25,9 @@ export default function Hero() {
         gsap.set(".fade-in", { opacity: 1, y: 0 });
         return;
       }
+
+      // Set initial state for word animation
+      gsap.set(".word", { y: "110%" });
 
       // Initial Load Animation
       const tl = gsap.timeline({ delay: 1.5 }); // Wait for preloader
@@ -114,17 +119,17 @@ export default function Hero() {
       <div ref={overlayRef} className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4 text-center pt-16 pb-24 lg:pt-20 lg:pb-0">
         <div ref={textRef} className="w-full max-w-6xl">
           <span className="fade-in mb-4 md:mb-6 block text-xs md:text-sm font-semibold tracking-[0.3em] text-brass uppercase">
-            La Marsa · Tunisie
+            {t("hero.location")}
           </span>
           
           <h1 className="mb-6 md:mb-8 font-heading text-5xl md:text-7xl lg:text-[5.5rem] xl:text-8xl text-cream leading-[0.95] tracking-tight">
-            {"Où la saveur tunisienne se".split(" ").map((word, i) => (
+            {t("hero.titlePart1").split(" ").map((word, i) => (
               <span key={i} className="inline-block overflow-hidden pb-1 md:pb-2 mr-2 md:mr-4">
                 <span className="word inline-block">{word}</span>
               </span>
             ))}
             <span className="inline-block overflow-visible relative pb-1 md:pb-2 pl-1">
-              <span className="word inline-block">tisse</span>
+              <span className="word inline-block">{t("hero.titlePart2")}</span>
               <svg className="absolute -bottom-1 left-0 w-full h-3 md:h-4 overflow-visible" viewBox="0 0 100 12" preserveAspectRatio="none">
                 <path
                   ref={underlineRef}
@@ -145,13 +150,13 @@ export default function Hero() {
               href="#contact"
               className="inline-flex w-full items-center justify-center rounded-full border border-terracotta bg-terracotta px-8 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-2xl shadow-terracotta/25 transition-all hover:-translate-y-0.5 hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:w-auto"
             >
-              Réserver une table
+              {t("hero.btnBook")}
             </a>
             <a
               href="#menu"
               className="inline-flex w-full items-center justify-center rounded-full border border-cream/25 bg-cream/10 px-8 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-2xl shadow-charcoal/20 backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-brass hover:bg-cream hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:w-auto"
             >
-              Voir le menu
+              {t("hero.btnMenu")}
             </a>
           </div>
         </div>

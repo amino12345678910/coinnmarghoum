@@ -3,65 +3,74 @@
 import { Star } from "lucide-react";
 
 import Reveal from "@/components/ui/Reveal";
+import { useLanguage } from "@/context/LanguageContext";
 
-const reviews = [
+type ReviewItem = {
+  name: string;
+  meta: { fr: string; en: string };
+  date: { fr: string; en: string };
+  text: string;
+};
+
+const reviews: ReviewItem[] = [
   {
     name: "Caleb",
-    meta: "Local Guide · 69 avis · 22 photos",
-    date: "il y a 7 mois",
+    meta: { fr: "Local Guide · 69 avis · 22 photos", en: "Local Guide · 69 reviews · 22 photos" },
+    date: { fr: "il y a 7 mois", en: "7 months ago" },
     text: "Wonderful traditional Tunisian food. Beautiful restaurant, the owner is great and everyone is very kind!",
   },
   {
     name: "Arroudj Melissa",
-    meta: "Local Guide · 11 avis · 7 photos",
-    date: "il y a 6 mois",
+    meta: { fr: "Local Guide · 11 avis · 7 photos", en: "Local Guide · 11 reviews · 7 photos" },
+    date: { fr: "il y a 6 mois", en: "6 months ago" },
     text: "Me and my husband went to this restaurant to have some traditional tunisian food and we were amazed with the taste of the food. Everything was spiced perfectly and the ambiance was great. The waiter was very friendly and we overall strongly recommend this restaurant.",
   },
   {
     name: "James Kyle",
-    meta: "Local Guide · 14 avis · 3 photos",
-    date: "il y a 3 mois",
+    meta: { fr: "Local Guide · 14 avis · 3 photos", en: "Local Guide · 14 reviews · 3 photos" },
+    date: { fr: "il y a 3 mois", en: "3 months ago" },
     text: "What can you say other than 'perfection'. The type of food you really do travel the world to taste. Flavors unique to Tunisia there is no doubt!",
   },
   {
     name: "Gaia Vendartik",
-    meta: "Local Guide · 33 avis · 38 photos",
-    date: "il y a 8 mois",
+    meta: { fr: "Local Guide · 33 avis · 38 photos", en: "Local Guide · 33 reviews · 38 photos" },
+    date: { fr: "il y a 8 mois", en: "8 months ago" },
     text: "Une adresse unique a La Marsa. Cuisine traditionnelle, a la fois genereuse et copieuse, mais aussi raffinee et elegante. Bravo Naser, un chef accueillant et souriant, soucieux des plus petits des details.",
   },
   {
     name: "Clemence Mabire",
-    meta: "5 avis · 8 photos",
-    date: "il y a 8 mois",
+    meta: { fr: "5 avis · 8 photos", en: "5 reviews · 8 photos" },
+    date: { fr: "il y a 8 mois", en: "8 months ago" },
     text: "La nourriture est delicieuse, tres typique et authentique. Les proprietaires proposent des solutions pour le sans gluten. La decoration est tres jolie, la playlist est top et les proprietaires sont adorables.",
   },
   {
     name: "Esprit d'embruns",
-    meta: "Gites du bord de mer · 4 avis · 4 photos",
-    date: "il y a 4 mois",
+    meta: { fr: "Gites du bord de mer · 4 avis · 4 photos", en: "Gites by the sea · 4 reviews · 4 photos" },
+    date: { fr: "il y a 4 mois", en: "4 months ago" },
     text: "Joli petit coin ! Cuisine abondante et variee, typiquement tunisienne. Poissons frais, saveurs subtilement epicees. Ambiance locale, frequentee par des locaux. Belle experience !",
   },
   {
     name: "star",
-    meta: "Local Guide · 25 avis · 31 photos",
-    date: "il y a 2 mois",
+    meta: { fr: "Local Guide · 25 avis · 31 photos", en: "Local Guide · 25 reviews · 31 photos" },
+    date: { fr: "il y a 2 mois", en: "2 months ago" },
     text: "We had dinner in the Ramadan season and it was fabulous. In addition a friendly service, great atmosphere and cats!",
   },
 ];
 
-const marqueeItems = [...reviews, ...reviews];
-
 export default function Reviews() {
+  const { locale, t } = useLanguage();
+  const marqueeItems = [...reviews, ...reviews];
+
   return (
     <section className="relative w-full overflow-hidden border-t border-brass/10 bg-cream py-24 md:py-32">
       <div className="container relative z-20 mx-auto max-w-7xl px-6 md:px-12 lg:px-24">
         <Reveal>
           <div className="mb-14 flex flex-col items-center text-center">
             <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-brass">
-              Avis Google
+              {t("reviews.eyebrow")}
             </span>
             <h2 className="mb-5 font-heading text-4xl leading-tight text-deep-blue md:text-5xl lg:text-6xl">
-              Des clients qui reviennent pour le gout
+              {t("reviews.title")}
             </h2>
             <div className="flex items-center gap-3 rounded-full border border-brass/25 bg-white/70 px-5 py-3 shadow-sm shadow-charcoal/5">
               <span className="font-heading text-2xl leading-none text-deep-blue">5.0</span>
@@ -71,7 +80,7 @@ export default function Reviews() {
                 ))}
               </span>
               <span className="text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/55">
-                vrais avis
+                {t("reviews.authenticLabel")}
               </span>
             </div>
           </div>
@@ -97,7 +106,7 @@ export default function Reviews() {
                     <h3 className="font-heading text-xl leading-tight text-deep-blue md:text-2xl">
                       {item.name}
                     </h3>
-                    <p className="mt-1 text-xs text-charcoal/55">{item.meta}</p>
+                    <p className="mt-1 text-xs text-charcoal/55">{item.meta[locale]}</p>
                   </div>
                 </div>
 
@@ -107,7 +116,7 @@ export default function Reviews() {
                       <Star key={index} size={15} className="fill-brass text-brass" />
                     ))}
                   </span>
-                  <span className="text-sm text-charcoal/55">{item.date}</span>
+                  <span className="text-sm text-charcoal/55">{item.date[locale]}</span>
                 </div>
 
                 <p className="text-sm leading-relaxed text-charcoal/75 md:text-base">

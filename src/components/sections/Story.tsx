@@ -5,8 +5,10 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Story() {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const dishImageRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export default function Story() {
             <div className="absolute inset-0 z-0">
               <Image 
                 src="/images/about_margoum.png" 
-                alt="Détail de tissage Margoum" 
+                alt={t("story.imageAltMargoum")} 
                 fill 
                 className="object-cover saturate-50 contrast-125"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -95,7 +97,7 @@ export default function Story() {
             >
               <Image 
                 src="/images/dish_couscous.png" 
-                alt="Couscous Royal Coin Margoum" 
+                alt={t("story.imageAltCouscous")} 
                 fill 
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -110,37 +112,37 @@ export default function Story() {
             <Reveal>
               <div className="flex flex-col items-start text-left mb-8">
                 <span className="text-xs font-semibold tracking-[0.2em] text-brass uppercase mb-4">
-                  NOTRE IDENTITÉ
+                  {t("story.eyebrow")}
                 </span>
                 <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl text-deep-blue leading-tight text-balance">
-                  Pourquoi le Margoum ?
+                  {t("story.title")}
                 </h2>
               </div>
             </Reveal>
 
             <Reveal delay={0.1}>
               <p className="text-base md:text-lg text-charcoal/80 mb-6 leading-relaxed">
-                Reconnu comme un restaurant tunisien incontournable à La Marsa, Coin Margoum prépare chaque plat avec le même soin qu&apos;un tapis tissé à la main. L&apos;artisanat de la cuisine tunisienne authentique se retrouve dans chaque détail.
+                {t("story.paragraph1")}
               </p>
             </Reveal>
 
             <Reveal delay={0.2}>
               <p className="text-base md:text-lg text-charcoal/80 mb-10 leading-relaxed">
-                Des ingrédients soigneusement choisis et des épices équilibrées s&apos;entrelacent pour créer une expérience culinaire où chaque saveur raconte une histoire, tout comme les motifs géométriques de notre héritage tunisien.
+                {t("story.paragraph2")}
               </p>
             </Reveal>
 
             <Reveal delay={0.3}>
               <blockquote className="border-l-2 border-terracotta pl-6 mb-10 py-1">
                 <p className="font-heading text-2xl md:text-3xl text-terracotta italic leading-snug tracking-tight">
-                  &quot;Chaque plat est une histoire tissée.&quot;
+                  &quot;{t("story.quote")}&quot;
                 </p>
               </blockquote>
             </Reveal>
 
             <Reveal delay={0.4}>
               <a href="#menu" className="group relative inline-flex items-center text-brass font-semibold uppercase tracking-widest text-xs md:text-sm hover:text-terracotta transition-colors duration-300">
-                En savoir plus
+                {t("story.btnMore")}
                 <svg className="absolute -bottom-2 left-0 w-full h-2 overflow-visible" viewBox="0 0 100 12" preserveAspectRatio="none">
                   <path
                     d="M0,6 Q12,12 25,6 T50,6 T75,6 T100,6"

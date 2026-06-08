@@ -19,6 +19,28 @@ Instructions :
 - Si on te pose une question hors restauration, redirige poliment vers le restaurant.
 `;
 
+const SYSTEM_PROMPT_EN = `You are "Margoum", the warm and welcoming virtual host of the upscale Tunisian restaurant "Coin Margoum", located in La Marsa (Tunisia).
+
+Restaurant Information:
+- Location: 12 Rue Sidi Abdelaziz, La Marsa, 2070, Tunisia.
+- Hours: Monday to Thursday (12:00 PM - 11:00 PM), Friday to Sunday (12:00 PM - 12:00 AM).
+- Specialties: Royal Couscous, Djerbian Rice, Merguez Ojja, Egg Brik.
+- Estimated prices: starters 11-18 TND, mains 26-46 TND, desserts 12-18 TND, beverages 6-9 TND.
+- Ambiance: authentic, decor inspired by traditional woven Margoum rugs, soft background music.
+
+Your role:
+- Advise guests on the menu.
+- Explain the spice levels.
+- Offer recommendations.
+- Assist with booking via the reservation form.
+
+Instructions:
+- Be extremely brief and concise (maximum 1 to 3 sentences).
+- Do not provide links or code.
+- Speak in English since the client is viewing the site in English.
+- If asked questions unrelated to the restaurant, politely redirect back to Coin Margoum.
+`;
+
 const JSON_HEADERS = { "Content-Type": "application/json" };
 const MAX_MESSAGES = 12;
 const MAX_CONTENT_LENGTH = 600;
@@ -80,9 +102,25 @@ function sanitizeMessages(rawMessages: unknown) {
     .filter((message) => message.content.length > 0);
 }
 
-function fallbackReply(messages: Array<{ role: "user" | "assistant"; content: string }>) {
+function fallbackReply(messages: Array<{ role: "user" | "assistant"; content: string }>, locale: "fr" | "en") {
   const lastUserMessage =
     [...messages].reverse().find((message) => message.role === "user")?.content.toLowerCase() || "";
+
+  if (locale === "en") {
+    if (lastUserMessage.includes("veget") || lastUserMessage.includes("meat")) {
+      return "I recommend the vegetable couscous, homemade kafteji, or classic lablabi. They are warm, generous, and highly aromatic choices.";
+    }
+    if (lastUserMessage.includes("price") || lastUserMessage.includes("cost") || lastUserMessage.includes("how much")) {
+      return "Starters begin around 11 TND, signature dishes range from 29 to 46 TND, and the Royal Couscous is 42 TND.";
+    }
+    if (lastUserMessage.includes("reser") || lastUserMessage.includes("book") || lastUserMessage.includes("table")) {
+      return "To book, please use the Contact & Reservation form. Enter the date, time, and number of guests, and our team will confirm shortly.";
+    }
+    if (lastUserMessage.includes("spic") || lastUserMessage.includes("hot") || lastUserMessage.includes("harissa")) {
+      return "Harissa is well-balanced: the Merguez Ojja is the spiciest, the Royal Couscous is hearty but balanced, and the Djerbian Rice is mostly fragrant.";
+    }
+    return "Marhaba! For a first visit, I recommend the Egg Brik, Royal Couscous, or Djerbian Rice, followed by a fresh mint tea.";
+  }
 
   if (lastUserMessage.includes("veget") || lastUserMessage.includes("sans viande")) {
     return "Je vous conseille le couscous aux legumes, le kafteji maison ou le lablabi soigne. Ce sont des choix genereux et bien parfumes.";
@@ -113,18 +151,24 @@ exports.handler = async function (event: any) {
     return json(429, { reply: "Le concierge recoit beaucoup de demandes. Veuillez reessayer dans un instant." });
   }
 
+  let locale: "fr" | "en" = "fr";
   try {
     const body = JSON.parse(event.body || "{}");
     const messages = sanitizeMessages(body.messages);
+    if (body.locale === "en" || body.locale === "fr") {
+      locale = body.locale;
+    }
 
     if (messages.length === 0) {
-      return json(400, { reply: "Envoyez une question pour demarrer la conversation." });
+      return json(400, { reply: locale === "en" ? "Send a question to start the conversation." : "Envoyez une question pour demarrer la conversation." });
     }
 
     const apiKey = process.env.MISTRAL_API_KEY;
     if (!apiKey) {
-      return json(200, { reply: fallbackReply(messages), mode: "fallback" });
+      return json(200, { reply: fallbackReply(messages, locale), mode: "fallback" });
     }
+
+    const systemPrompt = locale === "en" ? SYSTEM_PROMPT_EN : SYSTEM_PROMPT;
 
     const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
@@ -134,7 +178,7 @@ exports.handler = async function (event: any) {
       },
       body: JSON.stringify({
         model: process.env.MISTRAL_MODEL || "mistral-tiny",
-        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
         temperature: 0.7,
         max_tokens: 150,
       }),
@@ -155,7 +199,9 @@ exports.handler = async function (event: any) {
   } catch (error) {
     console.error(error);
     return json(200, {
-      reply: "Je reste disponible pour vous guider: Couscous Royal, Riz Djerbien et Ojja Merguez sont les grands favoris de la maison.",
+      reply: locale === "en" 
+        ? "I remain available to guide you: Royal Couscous, Djerbian Rice, and Merguez Ojja are our guests' favorites."
+        : "Je reste disponible pour vous guider: Couscous Royal, Riz Djerbien et Ojja Merguez sont les grands favoris de la maison.",
       mode: "fallback",
     });
   }
