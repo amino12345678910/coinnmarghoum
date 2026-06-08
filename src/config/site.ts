@@ -10,8 +10,8 @@ export const siteConfig = {
     latitude: 36.88856,
     longitude: 10.323565,
   },
-  phoneE164: process.env.NEXT_PUBLIC_RESTAURANT_PHONE_E164 || "+21650335898",
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+21650335898",
+  phoneE164: process.env.NEXT_PUBLIC_RESTAURANT_PHONE_E164 || "+21692177031",
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+21692177031",
   socials: {
     instagram:
       process.env.NEXT_PUBLIC_INSTAGRAM_URL ||

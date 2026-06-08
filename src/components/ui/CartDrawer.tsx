@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { siteConfig } from "@/config/site";
 
 const WhatsAppIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -26,7 +27,7 @@ export default function CartDrawer() {
   const [specialNotes, setSpecialNotes] = useState("");
 
   const handleCheckout = () => {
-    const phone = "+21650335898";
+    const phone = siteConfig.whatsappNumber;
     const cleanPhone = phone.replace(/[^\d]/g, "");
 
     const timestamp = new Date().toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
