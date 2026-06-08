@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Flame, Leaf, CalendarDays } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { MenuItem } from "@/data/menu";
+import { useCart } from "@/context/CartContext";
 
 interface FoodDetailModalProps {
   item: MenuItem | null;
@@ -15,6 +16,7 @@ interface FoodDetailModalProps {
 
 export default function FoodDetailModal({ item, isOpen, onClose }: FoodDetailModalProps) {
   const { locale, t } = useLanguage();
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (isOpen) {
@@ -135,15 +137,27 @@ export default function FoodDetailModal({ item, isOpen, onClose }: FoodDetailMod
                 </div>
               </div>
 
-              {/* Reservation / CTA Button */}
-              <a
-                href="#contact"
-                onClick={onClose}
-                className="w-full inline-flex items-center justify-center gap-3 rounded-full bg-deep-blue px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-cream shadow-lg shadow-deep-blue/20 transition-all hover:-translate-y-0.5 hover:bg-terracotta focus:outline-none focus-visible:ring-2 focus-visible:ring-brass"
-              >
-                {t("fullMenu.btnBookTable")}
-                <CalendarDays size={16} />
-              </a>
+              {/* Actions Grid: Add to cart & Book table */}
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    addItem(item);
+                    onClose();
+                  }}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-full border-2 border-brass bg-cream px-5 py-4 text-xs font-bold uppercase tracking-[0.15em] text-charcoal shadow-md transition-all hover:-translate-y-0.5 hover:bg-brass hover:text-charcoal focus:outline-none"
+                >
+                  {t("cart.addBtn")}
+                </button>
+                <a
+                  href="#contact"
+                  onClick={onClose}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-deep-blue px-5 py-4 text-xs font-semibold uppercase tracking-[0.15em] text-cream shadow-lg shadow-deep-blue/20 transition-all hover:-translate-y-0.5 hover:bg-terracotta focus:outline-none"
+                >
+                  {t("fullMenu.btnBookTable")}
+                  <CalendarDays size={14} />
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>

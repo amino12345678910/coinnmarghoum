@@ -123,6 +123,25 @@ export const translations = {
       suggestion2: "Plats végétariens ?",
       suggestion3: "Combien coûte un couscous ?",
       suggestion4: "Réserver une table"
+    },
+    cart: {
+      title: "Votre Sélection",
+      empty: "Votre table est vide pour le moment",
+      emptyDesc: "Parcourez notre carte et composez votre sélection de plats.",
+      subtotal: "Sous-total",
+      checkout: "Envoyer ma sélection via WhatsApp",
+      addBtn: "Ajouter à ma sélection",
+      addedBtn: "Ajouté",
+      clientName: "Votre Nom",
+      clientNamePlaceholder: "Ex. Youssef Ben Ali",
+      notes: "Demandes ou préférences",
+      notesPlaceholder: "Ex. Harissa à part, cuisson rosée, sans oignon...",
+      closeAria: "Fermer la sélection",
+      openAria: "Ouvrir la sélection",
+      itemsCount: "plat",
+      itemsCountPlural: "plats",
+      heading: "La Sélection Margoum",
+      subtitle: "Créez votre assemblage sur mesure"
     }
   },
   en: {
@@ -249,6 +268,25 @@ export const translations = {
       suggestion2: "Vegetarian dishes?",
       suggestion3: "How much does a couscous cost?",
       suggestion4: "Book a table"
+    },
+    cart: {
+      title: "Your Selection",
+      empty: "Your table is empty for now",
+      emptyDesc: "Browse our menu and compose your selection of dishes.",
+      subtotal: "Subtotal",
+      checkout: "Send my selection via WhatsApp",
+      addBtn: "Add to my selection",
+      addedBtn: "Added",
+      clientName: "Your Name",
+      clientNamePlaceholder: "e.g., Youssef Ben Ali",
+      notes: "Special requests",
+      notesPlaceholder: "e.g., Harissa on the side, no onions...",
+      closeAria: "Close selection",
+      openAria: "Open selection",
+      itemsCount: "dish",
+      itemsCountPlural: "dishes",
+      heading: "The Margoum Selection",
+      subtitle: "Create your custom assembly"
     }
   }
 };

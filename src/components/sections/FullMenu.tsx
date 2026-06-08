@@ -9,6 +9,8 @@ import Reveal from "@/components/ui/Reveal";
 import { menuCategories, type MenuCategoryId, type MenuItem } from "@/data/menu";
 import { useLanguage } from "@/context/LanguageContext";
 import FoodDetailModal from "@/components/ui/FoodDetailModal";
+import { useCart } from "@/context/CartContext";
+import CartDrawer from "@/components/ui/CartDrawer";
 
 const categoryIcons = {
   entrees: Sparkles,
@@ -20,6 +22,7 @@ const categoryIcons = {
 
 export default function FullMenu() {
   const { locale, t } = useLanguage();
+  const { addItem } = useCart();
   const [activeId, setActiveId] = useState<MenuCategoryId | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -273,16 +276,28 @@ export default function FullMenu() {
                         </p>
                       </div>
 
-                      {/* Card Footer tags */}
-                      <div className="flex flex-wrap gap-1 border-t border-charcoal/5 pt-4">
-                        {item.notes[locale].slice(0, 2).map((note) => (
-                          <span
-                            key={note}
-                            className="bg-cream/40 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-charcoal/55 rounded-sm"
-                          >
-                            {note}
-                          </span>
-                        ))}
+                      {/* Card Footer tags and Add Button */}
+                      <div className="flex items-center justify-between border-t border-charcoal/5 pt-4 mt-auto">
+                        <div className="flex flex-wrap gap-1">
+                          {item.notes[locale].slice(0, 2).map((note) => (
+                            <span
+                              key={note}
+                              className="bg-cream/40 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-charcoal/55 rounded-sm"
+                            >
+                              {note}
+                            </span>
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addItem(item);
+                          }}
+                          className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-brass hover:text-terracotta transition-colors border border-brass/30 hover:border-terracotta/40 px-3 py-1.5 rounded-full bg-cream/10 z-10"
+                        >
+                          <span>+ {locale === "fr" ? "Ajouter" : "Add"}</span>
+                        </button>
                       </div>
                     </div>
                   </motion.div>
@@ -355,6 +370,9 @@ export default function FullMenu() {
         isOpen={selectedItem !== null}
         onClose={() => setSelectedItem(null)}
       />
+
+      {/* Cart Drawer Component */}
+      <CartDrawer />
     </section>
   );
 }
