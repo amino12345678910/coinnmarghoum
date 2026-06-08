@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
+import "./warmth-theme.css";
 import LenisProvider from "@/components/layout/LenisProvider";
 import Noise from "@/components/ui/Noise";
 import Cursor from "@/components/ui/Cursor";

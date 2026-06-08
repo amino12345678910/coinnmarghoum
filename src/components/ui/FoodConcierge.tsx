@@ -116,14 +116,16 @@ export default function FoodConcierge() {
 
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full border border-brass bg-charcoal text-brass shadow-2xl shadow-charcoal/30 transition-all duration-300 hover:-translate-y-1 hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal md:bottom-10 md:right-10"
-        aria-label="Ouvrir le concierge virtuel"
-      >
-        <span className="absolute inset-1 rounded-full border border-brass/20" />
-        <Sparkles size={25} className="relative z-10" />
-      </button>
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full border border-brass bg-charcoal text-brass shadow-2xl shadow-charcoal/30 transition-all duration-300 hover:-translate-y-1 hover:bg-brass hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal md:bottom-10 md:right-10"
+          aria-label="Ouvrir le concierge virtuel"
+        >
+          <span className="absolute inset-1 rounded-full border border-brass/20" />
+          <Sparkles size={25} className="relative z-10" />
+        </button>
+      )}
 
       <AnimatePresence>
         {isOpen && (
@@ -147,7 +149,7 @@ export default function FoodConcierge() {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="relative z-10 text-cream/60 transition-colors hover:text-terracotta"
+                className="relative z-30 p-2 text-cream/60 transition-colors hover:text-terracotta cursor-pointer"
                 aria-label={t("gallery.closeAria")}
               >
                 <X size={24} />
